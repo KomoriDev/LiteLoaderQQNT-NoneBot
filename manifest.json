@@ -1,15 +1,16 @@
 {
   "manifest_version": 4,
   "type": "extension",
-  "name": "LLTemplate-Vite",
-  "slug": "LLTemplate-Vite",
-  "description": "A plugin template for LiteLoaderQQNT, powered by Vite & Typescript",
-  "version": "1.0.0",
-  "icon": null,
+  "name": "NoneBot",
+  "slug": "liteloader_nonebot",
+  "description": "nonebot",
+  "version": "0.1.0",
+  "icon": "./assets/icon.png",
+  "thumb": "./assets/icon.png",
   "authors": [
     {
-      "name": "MisaLiu",
-      "link": "https://github.com/MisaLiu"
+      "name": "KomoriDev",
+      "link": "https://github.com/KomoriDev"
     }
   ],
   "platform": [
@@ -23,11 +24,11 @@
     "renderer": "./renderer/index.js"
   },
   "repository": {
-    "repo": "MisaLiu/LietLoaderQQNT-PluginTemplate-Vite",
+    "repo": "KomoriDev/LiteLoaderQQNT-NoneBot",
     "branch": "master",
     "release": {
-      "tag": "1.0.0",
-      "file": "LLTemplate-Vite"
+      "tag": "0.1.0",
+      "file": "liteloader_nonebot.zip"
     }
   }
 }
