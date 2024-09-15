@@ -11,6 +11,9 @@ devDependencies:
   '@electron-toolkit/tsconfig':
     specifier: ^1.0.1
     version: 1.0.1(@types/node@22.5.5)
+  '@types/node':
+    specifier: ^22.5.5
+    version: 22.5.5
   '@typescript-eslint/eslint-plugin':
     specifier: ^7.2.0
     version: 7.18.0(@typescript-eslint/parser@7.18.0)(eslint@8.57.0)(typescript@5.6.2)
@@ -737,7 +740,7 @@ packages:
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 20.16.5
+      '@types/node': 22.5.5
       '@types/responselike': 1.0.3
     dev: true
 
@@ -756,7 +759,7 @@ packages:
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 20.16.5
+      '@types/node': 22.5.5
     dev: true
 
   /@types/node@14.18.63:
@@ -778,7 +781,7 @@ packages:
   /@types/responselike@1.0.3:
     resolution: {integrity: sha512-H/+L+UkTV33uf49PH5pCAUBVPNj2nDBXTN+qS1dOwyyg24l3CcicicCA7ca+HMvJBZcFgl5r8e+RR6elsb4Lyw==}
     dependencies:
-      '@types/node': 20.16.5
+      '@types/node': 22.5.5
     dev: true
 
   /@types/semver@7.5.8:
@@ -789,7 +792,7 @@ packages:
     resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
     requiresBuild: true
     dependencies:
-      '@types/node': 20.16.5
+      '@types/node': 22.5.5
     dev: true
     optional: true
 

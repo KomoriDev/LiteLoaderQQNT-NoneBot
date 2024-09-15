@@ -24,12 +24,14 @@ module.exports = {
   ],
   'ignorePatterns': [
     'node_modules/**/*',
-    'dist/**/*'
+    'dist/**/*',
+    '*.html',
+    '*.svg'
   ],
   'parser': '@typescript-eslint/parser',
   'parserOptions': {
     'ecmaVersion': 'latest',
-    'sourceType': 'module'
+    'sourceType': 'module',
   },
   'plugins': [
     '@typescript-eslint'
