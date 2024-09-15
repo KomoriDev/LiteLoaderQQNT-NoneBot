@@ -1,27 +1,28 @@
+import { localFetch } from '@/lib';
+import log from '@/lib/log';
 
-export const onSettingWindowCreated = (view: HTMLElement) => {
-  console.log('Setting window has just been created');
+const pluginPath = LiteLoader.plugins.liteloader_nonebot.path.plugin;
 
-  let clickCount = 0;
-  const domParser = new DOMParser();
-  const doms = domParser.parseFromString([
-    '<div>',
-    '<h1>Hello world!</h1>',
-    '<button id="template-count">Count: 0</button>',
-    '<button id="template-greet">Greet as Misa</button>',
-    '</div>',
-  ].join(''), 'text/html');
-
-  (doms.body.querySelector('#template-count') as HTMLButtonElement).addEventListener('click', (e) => {
-    clickCount++;
-    (e.target as HTMLButtonElement).innerHTML = `Count: ${clickCount}`;
-  });
-
-  (doms.body.querySelector('#template-greet') as HTMLButtonElement).addEventListener('click', () => {
-    LLTemplate_Vite.greeting('Misa');
-  });
-
-  doms.body.childNodes.forEach((dom) => {
-    view.appendChild(dom);
-  });
+export const onSettingWindowCreated = async (view: HTMLElement) => {
+  try {
+    log(`Loading welcome page from ${pluginPath}`);
+    
+    view.innerHTML = await (await localFetch('/renderer/views/welcome.html')).text();
+    
+    const officialWebsiteJumpBtn = view.querySelector<HTMLButtonElement>('.btn-official-website')!;
+    officialWebsiteJumpBtn.onclick = () => {
+      window.location.href = 'https://nonebot.dev';
+    };
+    const communityWebsiteJumpBtn = view.querySelector<HTMLButtonElement>('.btn-community-website')!;
+    communityWebsiteJumpBtn.onclick = () => {
+      window.location.href = 'https://x.none.bot';
+    };
+    const githubJumpBtn = view.querySelector<HTMLButtonElement>('.btn-github')!;
+    githubJumpBtn.onclick = () => {
+      window.location.href = 'https://github.com/KomoriDev/LiteLoaderQQNT-NoneBot';
+    };
+  } catch (error) {
+    view.innerHTML = `<p>Error loading page: ${error}</p>`;
+  }
 };
+  
