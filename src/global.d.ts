@@ -1,8 +1,5 @@
 /// <reference types="vite/client" />
 
-declare namespace LLTemplate_Vite {
-  const greeting: (name: string) => void;
-}
 
 declare namespace LiteLoader {
   const path: ILiteLoaderPath;
