@@ -10,19 +10,13 @@ export const onSettingWindowCreated = async (view: HTMLElement) => {
     view.innerHTML = await (await localFetch('/renderer/views/welcome.html')).text();
     
     const officialWebsiteJumpBtn = view.querySelector<HTMLButtonElement>('.btn-official-website')!;
-    officialWebsiteJumpBtn.onclick = () => {
-      window.location.href = 'https://nonebot.dev';
-    };
     const communityWebsiteJumpBtn = view.querySelector<HTMLButtonElement>('.btn-community-website')!;
-    communityWebsiteJumpBtn.onclick = () => {
-      window.location.href = 'https://x.none.bot';
-    };
     const githubJumpBtn = view.querySelector<HTMLButtonElement>('.btn-github')!;
-    githubJumpBtn.onclick = () => {
-      window.location.href = 'https://github.com/KomoriDev/LiteLoaderQQNT-NoneBot';
-    };
+    
+    officialWebsiteJumpBtn.onclick = () => LiteLoader.api.openExternal('https://nonebot.dev');
+    communityWebsiteJumpBtn.onclick = () => LiteLoader.api.openExternal('https://x.none.bot');
+    githubJumpBtn.onclick = () => LiteLoader.api.openExternal('https://github.com/KomoriDev/LiteLoaderQQNT-NoneBot');
   } catch (error) {
     view.innerHTML = `<p>Error loading page: ${error}</p>`;
   }
 };
-  
