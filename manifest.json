@@ -19,9 +19,9 @@
     "darwin"
   ],
   "injects": {
-    "main": "./src/main/index.ts",
-    "preload": "./src/preload/index.ts",
-    "renderer": "./src/renderer/index.ts"
+    "main": "./main/index.js",
+    "preload": "./preload/index.js",
+    "renderer": "./renderer/index.js"
   },
   "repository": {
     "repo": "KomoriDev/LiteLoaderQQNT-NoneBot",
