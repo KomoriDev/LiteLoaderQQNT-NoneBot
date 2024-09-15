@@ -5,8 +5,8 @@
   "slug": "liteloader_nonebot",
   "description": "nonebot",
   "version": "0.1.0",
-  "icon": "./assets/icon.png",
-  "thumb": "./assets/icon.png",
+  "icon": "public/icon.svg",
+  "thumb": "public/icon.svg",
   "authors": [
     {
       "name": "KomoriDev",
@@ -19,9 +19,9 @@
     "darwin"
   ],
   "injects": {
-    "main": "./main/index.js",
-    "preload": "./preload/index.js",
-    "renderer": "./renderer/index.js"
+    "main": "./src/main/index.ts",
+    "preload": "./src/preload/index.ts",
+    "renderer": "./src/renderer/index.ts"
   },
   "repository": {
     "repo": "KomoriDev/LiteLoaderQQNT-NoneBot",
