@@ -2,7 +2,7 @@ import { log, localFetch } from '@/lib';
 
 export const onSettingWindowCreated = async (view: HTMLElement) => {
   try {
-    view.innerHTML = await (await localFetch('/renderer/views/welcome.html')).text();
+    view.innerHTML = await (await localFetch('/renderer/views/view.html')).text();
 
     const botList = view.querySelector<HTMLButtonElement>('.bot-list')!;
 
