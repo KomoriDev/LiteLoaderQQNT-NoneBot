@@ -34,10 +34,29 @@ export const onSettingWindowCreated = async (view: HTMLElement) => {
       botList.innerHTML = `<p>Error loading bot: ${error}</p>`;
     });
 
+    const createBotBtn = view.querySelector<HTMLButtonElement>('.btn-create-bot')!;
+    const createBotModal = view.querySelector<HTMLElement>('.create-bot-modal')!;
+    const selectLocalFolderInput = view.querySelector<HTMLInputElement>('.input-local-folder')!;
+    const selectLocalFolderBtn = view.querySelector<HTMLButtonElement>('.select-local-folder')!;
+    const closeModalBtn = view.querySelector<HTMLButtonElement>('.btn-close-modal')!;
+    
+    createBotBtn.onclick = () => createBotModal.setAttribute('is-active', 'true');
+    selectLocalFolderInput.onclick = () => selectLocalFolderInput.value = '';
+    selectLocalFolderBtn.onclick = async () => {
+      const result = await window.liteloader_nonebot.showOpenDialog({
+        title: '请选择文件夹',
+        properties: ['openDirectory'],
+        buttonLabel: '选择文件夹',
+      });
+      if (!result.canceled) {
+        selectLocalFolderInput.value = result.filePaths[0];
+      }
+    };
+    closeModalBtn.onclick = () => createBotModal.removeAttribute('is-active');
+
     const versionText = view.querySelector<HTMLElement>('#version');
     versionText ? versionText.innerHTML += ` - v${VERSION}` : '';
 
-    
     const officialWebsiteJumpBtn = view.querySelector<HTMLButtonElement>('.btn-official-website')!;
     const communityWebsiteJumpBtn = view.querySelector<HTMLButtonElement>('.btn-community-website')!;
     const githubJumpBtn = view.querySelector<HTMLButtonElement>('.btn-github')!;

@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer, OpenDialogOptions, OpenDialogReturnValue } from 'electron';
 import { BotConfig, NontBotConfig } from '@/types';
 
 export type ContextBridgeApi = {
@@ -8,6 +8,7 @@ export type ContextBridgeApi = {
   setBot: (config: object) => void;
   setConfig: (config: object) => void;
   setBotConfig: (config: object) => void;
+  showOpenDialog: (data: OpenDialogOptions) => Promise<OpenDialogReturnValue>;
 }
 
 const exposedApi: ContextBridgeApi = {
@@ -23,6 +24,8 @@ const exposedApi: ContextBridgeApi = {
   setConfig: (config) => ipcRenderer.send('LiteLoader.liteloader_nonebot.setConfig', config),
   // 更新 Bot 配置文件
   setBotConfig: (config) => ipcRenderer.send('LiteLoader.liteloader_nonebot.setBotConfig', config),
+  // 通用文件选择窗口
+  showOpenDialog: (data) => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.showOpenDialog', data),
 };
 
 contextBridge.exposeInMainWorld('liteloader_nonebot', exposedApi);
