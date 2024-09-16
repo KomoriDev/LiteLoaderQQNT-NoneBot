@@ -1,13 +1,35 @@
-import { localFetch } from '@/lib';
-import log from '@/lib/log';
-
-const pluginPath = LiteLoader.plugins.liteloader_nonebot.path.plugin;
+import { log, localFetch } from '@/lib';
 
 export const onSettingWindowCreated = async (view: HTMLElement) => {
   try {
-    log(`Loading welcome page from ${pluginPath}`);
-    
     view.innerHTML = await (await localFetch('/renderer/views/welcome.html')).text();
+
+    const botList = view.querySelector<HTMLButtonElement>('.bot-list')!;
+
+    await window.liteloader_nonebot.getBots().then(data => {
+      if (data.length === 0) {
+        botList.innerHTML = `
+          <setting-item>
+            <div>
+              <setting-text>当前还没有创建 Bot 喔</setting-text>
+            </div>
+            <setting-button class="btn-create-bot" data-type="primary">即刻创建</setting-button>
+          </setting-item>
+        `;
+      } else {
+        data.forEach((bot) => {
+          botList.innerHTML += `
+            <setting-item>
+              <setting-text>${bot.name}</setting-text>
+              <setting-button class="btn-show-bot" data-type="primary">查看</setting-button>
+            </setting-item>
+          `;
+        });
+      } 
+      log(`loading config: ${data.values}`);
+    }).catch (error => {
+      botList.innerHTML = `<p>Error loading bot: ${error}</p>`;
+    });
     
     const officialWebsiteJumpBtn = view.querySelector<HTMLButtonElement>('.btn-official-website')!;
     const communityWebsiteJumpBtn = view.querySelector<HTMLButtonElement>('.btn-community-website')!;

@@ -1,6 +1,6 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
-  "include": ["src/**/*.ts", "src/preload/*.d.ts", "src/global.d.ts"],
+  "include": ["src/**/*.ts", "src/global.d.ts"],
   "compilerOptions": {
     "composite": true,
     "baseUrl": ".",

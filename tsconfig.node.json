@@ -7,6 +7,6 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["electron-vite/node"]
+    "types": ["vite/client", "electron-vite/node"]
   }
 }

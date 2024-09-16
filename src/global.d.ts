@@ -1,19 +1,8 @@
 /// <reference types="vite/client" />
 
+import type { ContextBridgeApi } from './preload';
 
 declare namespace LiteLoader {
-  const path: ILiteLoaderPath;
-  const versions: ILiteLoaderVersion;
-  const os: ILiteLoaderOS;
-  const package: ILiteLoaderPackage;
-  const config: {
-    LiteLoader: {
-      disabled_plugins: string[],
-    }
-  };
-  const plugins: Record<string, ILiteLoaderPlugin>;
-  const api: ILiteLoaderAPI;
-
   interface ILiteLoaderPath {
     root: string,
     profile: string,
@@ -67,5 +56,28 @@ declare namespace LiteLoader {
   interface ILiteLoaderAPIConfig {
     set: <IConfig = unknown>(slug: string, new_config: IConfig) => unknown,
     get: <IConfig = unknown>(slug: string, default_config?: IConfig) => IConfig,
+  }
+}
+
+declare interface LiteLoader {
+  path: LiteLoader.ILiteLoaderPath;
+  versions: LiteLoader.ILiteLoaderVersion;
+  os: LiteLoader.ILiteLoaderOS;
+  package: LiteLoader.ILiteLoaderPackage;
+  config: {
+    LiteLoader: {
+      disabled_plugins: string[],
+    }
+  };
+  plugins: Record<string, LiteLoader.ILiteLoaderPlugin>;
+  api: LiteLoader.ILiteLoaderAPI;
+}
+
+
+declare global {
+  const LiteLoader: LiteLoader;
+
+  interface Window {
+    liteloader_nonebot: ContextBridgeApi
   }
 }

@@ -1,4 +1,6 @@
 export interface BotConfig {
+    /** Bot 名称 */
+    name: string
     /** Bot 目录 */
     botPath: string
     /** 是否自启动 */

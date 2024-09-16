@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import log from '@/lib/log';
+import { log } from '@/lib/log';
+
+import './on';
 
 const dataPath = LiteLoader.plugins.liteloader_nonebot.path.data;
 const botsPath = path.join(dataPath, 'bots.json');
@@ -11,5 +13,5 @@ if (!fs.existsSync(dataPath)) {
 }
 if (!fs.existsSync(botsPath)) {
   log('bots.json file not found, creating a new file');
-  fs.writeFileSync(botsPath, JSON.stringify({}, null, 2));
+  fs.writeFileSync(botsPath, JSON.stringify([], null, 2));
 }
