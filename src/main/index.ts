@@ -3,6 +3,7 @@ import path from 'path';
 import { log } from '@/lib/log';
 
 import './on';
+import './uv';
 
 const dataPath = LiteLoader.plugins.liteloader_nonebot.path.data;
 const botsPath = path.join(dataPath, 'bots.json');
