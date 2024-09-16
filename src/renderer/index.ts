@@ -16,6 +16,7 @@ export const onSettingWindowCreated = async (view: HTMLElement) => {
               <setting-text>当前还没有创建 Bot 喔</setting-text>
             </div>
             <setting-button class="btn-create-bot" data-type="primary">即刻创建</setting-button>
+            <setting-button class="btn-import-bot" data-type="secondary">从本地导入</setting-button>
           </setting-item>
         `;
       } else {
