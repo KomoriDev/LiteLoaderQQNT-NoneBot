@@ -1,5 +1,7 @@
 import { log, localFetch } from '@/lib';
 
+const VERSION = LiteLoader.plugins.liteloader_nonebot.manifest['version'];
+
 export const onSettingWindowCreated = async (view: HTMLElement) => {
   try {
     view.innerHTML = await (await localFetch('/renderer/views/view.html')).text();
@@ -30,6 +32,10 @@ export const onSettingWindowCreated = async (view: HTMLElement) => {
     }).catch (error => {
       botList.innerHTML = `<p>Error loading bot: ${error}</p>`;
     });
+
+    const versionText = view.querySelector<HTMLElement>('#version');
+    versionText ? versionText.innerHTML += ` - v${VERSION}` : '';
+
     
     const officialWebsiteJumpBtn = view.querySelector<HTMLButtonElement>('.btn-official-website')!;
     const communityWebsiteJumpBtn = view.querySelector<HTMLButtonElement>('.btn-community-website')!;
