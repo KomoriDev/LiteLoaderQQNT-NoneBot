@@ -6,7 +6,7 @@
   "description": "在 QQ 上管理你的 NoneBot 应用 / Manage your NoneBot App on QQ",
   "version": "0.1.0",
   "icon": "public/icon.svg",
-  "thumb": "public/icon.svg",
+  "thumb": "public/thumb.svg",
   "authors": [
     {
       "name": "KomoriDev",
