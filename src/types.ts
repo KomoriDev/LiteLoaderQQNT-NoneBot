@@ -2,7 +2,7 @@ export interface BotConfig {
     /** Bot 名称 */
     name: string
     /** Bot 目录 */
-    botPath: string
+    path: string
     /** 是否自启动 */
     autoStart: boolean
 }

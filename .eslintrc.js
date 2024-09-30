@@ -25,6 +25,7 @@ module.exports = {
   'ignorePatterns': [
     'node_modules/**/*',
     'dist/**/*',
+    'src/template/**/*',
     '*.html',
     '*.svg'
   ],

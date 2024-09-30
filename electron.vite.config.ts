@@ -57,6 +57,8 @@ export default defineConfig({
         targets: [
           { src: './manifest.json', dest: 'dist' },
           { src: './src/public', dest: 'dist/public' },
+          { src: './src/template', dest: 'dist/template' },
+          { src: './src/template/src', dest: 'dist/template/src' },
           { src: './src/renderer/views', dest: 'dist/renderer/views' },
         ],
       }),

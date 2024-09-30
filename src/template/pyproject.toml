@@ -1,0 +1,26 @@
+[project]
+name = "{{ name }}"
+version = "0.1.0"
+description = "{{ name }}"
+readme = "README.md"
+dependencies = [
+    "nonebot2>=2.3.3",
+]
+
+[project.optional-dependencies]
+adapters = [
+    "nonebot-adapter-onebot>=2.4.4",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "nb-cli>=1.4.2",
+]
+
+[tool.nonebot]
+adapters = [
+    { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" }
+]
+plugins = []
+plugin_dirs = ["src/plugins"]
+
