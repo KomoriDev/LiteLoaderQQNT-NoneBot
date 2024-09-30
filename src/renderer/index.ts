@@ -1,13 +1,19 @@
 import * as nodePath from 'path';
 import { localFetch } from '@/lib';
 import { BotConfig } from '@/types';
+import { setupBotCreatedListener } from './listener';
 
 const dataPath = LiteLoader.plugins.liteloader_nonebot.path.data;
 const VERSION = LiteLoader.plugins.liteloader_nonebot.manifest['version'];
 
+const botCreatedEvent = new CustomEvent('botCreated');
+
+
 export const onSettingWindowCreated = async (view: HTMLElement) => {
   try {
     view.innerHTML = await (await localFetch('/renderer/views/view.html')).text();
+
+    setupBotCreatedListener(view);
 
     const botList = view.querySelector<HTMLButtonElement>('.bot-list')!;
 
@@ -76,7 +82,10 @@ export const onSettingWindowCreated = async (view: HTMLElement) => {
         const replacements = { 'name': botConfig.name };
         await window.liteloader_nonebot.createProject(botConfig.path, replacements)
           .then(async () => {
-            await window.liteloader_nonebot.setBot(botConfig).then(() => createBotModal.removeAttribute('is-active'));
+            await window.liteloader_nonebot.setBot(botConfig).then(() => {
+              createBotModal.removeAttribute('is-active');
+              document.dispatchEvent(botCreatedEvent);
+            });
           });
       };
     }).catch(error => {
@@ -97,3 +106,4 @@ export const onSettingWindowCreated = async (view: HTMLElement) => {
     view.innerHTML = `<p>Error loading page: ${error}</p>`;
   }
 };
+
