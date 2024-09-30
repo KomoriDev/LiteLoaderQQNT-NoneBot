@@ -4,9 +4,11 @@
   "description": "在 QQ 上管理你的 NoneBot 应用 / Manage your NoneBot App on QQ",
   "main": "index.js",
   "scripts": {
+    "build": "npx electron-vite build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "npx eslint --fix src/**/* --ext .js,.ts",
-    "build": "npx electron-vite build"
+    "lint": "eslint . --ext .vue,.js,.ts --ignore-path .gitignore",
+    "format": "prettier --write ./**/*.{html,vue,js,ts,jsx,tsx,json,md} --ignore-path .gitignore",
+    "prepare": "husky"
   },
   "author": "KomoriDev",
   "license": "AGPL-3.0-only",
@@ -20,11 +22,27 @@
     "electron": "^29.1.4",
     "electron-vite": "^2.1.0",
     "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "fs-extra": "^11.2.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "prettier": "3.3.3",
     "typescript": "^5.6.2",
     "unplugin-zip-pack": "^1.0.1",
     "vite": "^5.4.5",
     "vite-plugin-checker": "^0.6.4",
     "vite-plugin-cp": "^4.0.8"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{vue,js,ts,jsx,tsx}": [
+      "eslint --fix"
+    ],
+    "*.{html,vue,js,ts,json,md}": "prettier --write --ignore-unknown"
   }
 }

@@ -18,27 +18,28 @@ const BaseConfig = defineViteConfig({
   },
 });
 
-const ConfigBuilder = (type: 'main' | 'preload') => defineViteConfig({
-  ...BaseConfig,
+const ConfigBuilder = (type: 'main' | 'preload') =>
+  defineViteConfig({
+    ...BaseConfig,
 
-  plugins: [
-    viteChecker({
-      typescript: true,
-      eslint: {
-        lintCommand: 'eslint --fix src/**/* --ext .js,.ts',
+    plugins: [
+      viteChecker({
+        typescript: true,
+        eslint: {
+          lintCommand: 'eslint --fix src/**/* --ext .js,.ts',
+        },
+      }),
+    ],
+    build: {
+      minify: true,
+      outDir: resolve(OUTPUT_DIR, `./${type}`),
+      lib: {
+        entry: resolve(SRC_DIR, `./${type}/index.ts`),
+        formats: ['cjs'],
+        fileName: () => 'index.js',
       },
-    }),
-  ],
-  build: {
-    minify: true,
-    outDir: resolve(OUTPUT_DIR, `./${type}`),
-    lib: {
-      entry: resolve(SRC_DIR, `./${type}/index.ts`),
-      formats: [ 'cjs' ],
-      fileName: () => 'index.js',
     },
-  },
-});
+  });
 
 export default defineConfig({
   main: ConfigBuilder('main'),
@@ -72,7 +73,7 @@ export default defineConfig({
       outDir: resolve(OUTPUT_DIR, './renderer'),
       lib: {
         entry: resolve(SRC_DIR, './renderer/index.ts'),
-        formats: [ 'es' ],
+        formats: ['es'],
         fileName: () => 'index.js',
       },
       rollupOptions: {

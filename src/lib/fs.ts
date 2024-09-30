@@ -30,7 +30,11 @@ export function replacePlaceholders(content: string, replacements: Record<string
   return result;
 }
 
-export async function processTemplate(templateDir: string, targetDir: string, replacements: Record<string, string>): Promise<void> {
+export async function processTemplate(
+  templateDir: string,
+  targetDir: string,
+  replacements: Record<string, string>
+): Promise<void> {
   const files = await fs.readdir(templateDir);
 
   for (const file of files) {
@@ -51,4 +55,3 @@ export async function processTemplate(templateDir: string, targetDir: string, re
     }
   }
 }
-

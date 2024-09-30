@@ -1,10 +1,10 @@
 export const setupBotCreatedListener = (view: HTMLElement) => {
   const botList = view.querySelector<HTMLButtonElement>('.bot-list')!;
-  
+
   document.addEventListener('botCreated', async () => {
     const data = await window.liteloader_nonebot.getBots();
     botList.innerHTML = '';
-  
+
     if (data.length === 0) {
       botList.innerHTML = `
           <setting-item>
@@ -37,4 +37,3 @@ export const setupBotCreatedListener = (view: HTMLElement) => {
     }
   });
 };
-  

@@ -10,7 +10,7 @@ export type ContextBridgeApi = {
   setBotConfig: (config: object) => void;
   showOpenDialog: (data: OpenDialogOptions) => Promise<OpenDialogReturnValue>;
   createProject: (output: string, replacements: Record<string, string>) => Promise<void>;
-}
+};
 
 const exposedApi: ContextBridgeApi = {
   // 获取 Bot
@@ -28,7 +28,8 @@ const exposedApi: ContextBridgeApi = {
   // 通用文件选择窗口
   showOpenDialog: (data) => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.showOpenDialog', data),
   // 创建 Bot 项目
-  createProject: (output, replacements) => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.createProject', output, replacements),
+  createProject: (output, replacements) =>
+    ipcRenderer.invoke('LiteLoader.liteloader_nonebot.createProject', output, replacements),
 };
 
 contextBridge.exposeInMainWorld('liteloader_nonebot', exposedApi);

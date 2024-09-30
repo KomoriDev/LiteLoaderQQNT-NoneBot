@@ -4,58 +4,58 @@ import type { ContextBridgeApi } from './preload';
 
 declare namespace LiteLoader {
   interface ILiteLoaderPath {
-    root: string,
-    profile: string,
-    data: string,
-    plugins: string,
+    root: string;
+    profile: string;
+    data: string;
+    plugins: string;
   }
 
   interface ILiteLoaderVersion {
-    qqnt: string,
-    liteloader: string,
-    node: string,
-    chrome: string,
-    electron: string,
+    qqnt: string;
+    liteloader: string;
+    node: string;
+    chrome: string;
+    electron: string;
   }
 
   interface ILiteLoaderOS {
-    platform: 'win32' | 'linux' | 'darwin',
+    platform: 'win32' | 'linux' | 'darwin';
   }
 
   interface ILiteLoaderPackage {
-    liteloader: object,
-    qqnt: object,
+    liteloader: object;
+    qqnt: object;
   }
 
   interface ILiteLoaderPlugin {
-    manifest: object,
-    incompatible: boolean,
-    disabled: boolean,
-    path: ILiteLoaderPluginPath
+    manifest: object;
+    incompatible: boolean;
+    disabled: boolean;
+    path: ILiteLoaderPluginPath;
   }
 
   interface ILiteLoaderPluginPath {
-    plugin: string,
-    data: string,
-    injects: ILiteLoaderPluginPathInject
+    plugin: string;
+    data: string;
+    injects: ILiteLoaderPluginPathInject;
   }
 
   interface ILiteLoaderPluginPathInject {
-    main: string,
-    renderer: string,
-    preload: string,
+    main: string;
+    renderer: string;
+    preload: string;
   }
 
   interface ILiteLoaderAPI {
-    openPath: (path: string) => void,
-    openExternal: (url: string) => void,
-    disablePlugin: (slug: string) => void,
-    config: ILiteLoaderAPIConfig,
+    openPath: (path: string) => void;
+    openExternal: (url: string) => void;
+    disablePlugin: (slug: string) => void;
+    config: ILiteLoaderAPIConfig;
   }
 
   interface ILiteLoaderAPIConfig {
-    set: <IConfig = unknown>(slug: string, new_config: IConfig) => unknown,
-    get: <IConfig = unknown>(slug: string, default_config?: IConfig) => IConfig,
+    set: <IConfig = unknown>(slug: string, new_config: IConfig) => unknown;
+    get: <IConfig = unknown>(slug: string, default_config?: IConfig) => IConfig;
   }
 }
 
@@ -66,18 +66,17 @@ declare interface LiteLoader {
   package: LiteLoader.ILiteLoaderPackage;
   config: {
     LiteLoader: {
-      disabled_plugins: string[],
-    }
+      disabled_plugins: string[];
+    };
   };
   plugins: Record<string, LiteLoader.ILiteLoaderPlugin>;
   api: LiteLoader.ILiteLoaderAPI;
 }
 
-
 declare global {
   const LiteLoader: LiteLoader;
 
   interface Window {
-    liteloader_nonebot: ContextBridgeApi
+    liteloader_nonebot: ContextBridgeApi;
   }
 }

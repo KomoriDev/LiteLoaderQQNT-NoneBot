@@ -4,8 +4,5 @@
     "types": ["vite/client"]
   },
   "include": ["src/**/*.d.ts"],
-  "references": [
-    { "path": "./tsconfig.node.json" },
-    { "path": "./tsconfig.web.json" }
-  ]
+  "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.web.json" }]
 }

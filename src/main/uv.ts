@@ -17,13 +17,14 @@ function checkUVInstalled(): Promise<boolean> {
 
 function installUV(): Promise<void> {
   return new Promise((resolve, reject) => {
-    const installCommand = os === 'win32'
-      ? 'powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"'
-      : os === 'linux'
-        ? 'curl -LsSf https://astral.sh/uv/install.sh | sh'
-        : os === 'darwin'
+    const installCommand =
+      os === 'win32'
+        ? 'powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"'
+        : os === 'linux'
           ? 'curl -LsSf https://astral.sh/uv/install.sh | sh'
-          : 'curl -LsSf https://astral.sh/uv/install.sh | sh';
+          : os === 'darwin'
+            ? 'curl -LsSf https://astral.sh/uv/install.sh | sh'
+            : 'curl -LsSf https://astral.sh/uv/install.sh | sh';
     exec(installCommand, (error, _, stderr) => {
       if (error) {
         reject(`安装 uv 失败: ${stderr}`);
@@ -35,7 +36,7 @@ function installUV(): Promise<void> {
 }
 
 checkUVInstalled()
-  .then(isInstalled => {
+  .then((isInstalled) => {
     if (isInstalled) {
       log('uv 已安装');
       return Promise.resolve();
@@ -47,6 +48,6 @@ checkUVInstalled()
   .then(() => {
     log('uv 安装完成');
   })
-  .catch(error => {
+  .catch((error) => {
     error('操作失败:', error);
   });

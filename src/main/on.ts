@@ -18,7 +18,10 @@ ipcMain.handle('LiteLoader.liteloader_nonebot.setBot', async (_, config: BotConf
   return await writeJsonFile<BotConfig>(path.join(dataPath, 'bots.json'), config);
 });
 
-ipcMain.handle('LiteLoader.liteloader_nonebot.createProject', async (_, output: string, replacements: Record<string, string>) => {
-  log('creating project...', `${pluginPath.replace(/\\/g, '/')}/template`, output);
-  return await processTemplate(`${pluginPath.replace(/\\/g, '/')}/template`, output, replacements);
-});
+ipcMain.handle(
+  'LiteLoader.liteloader_nonebot.createProject',
+  async (_, output: string, replacements: Record<string, string>) => {
+    log('creating project...', `${pluginPath.replace(/\\/g, '/')}/template`, output);
+    return await processTemplate(`${pluginPath.replace(/\\/g, '/')}/template`, output, replacements);
+  }
+);
