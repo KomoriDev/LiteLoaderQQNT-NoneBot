@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "{{ name }}"
 readme = "README.md"
 dependencies = [
-    "nonebot2>=2.3.3",
+    "nonebot2[fastapi]>=2.3.3",
 ]
 
 [project.optional-dependencies]
