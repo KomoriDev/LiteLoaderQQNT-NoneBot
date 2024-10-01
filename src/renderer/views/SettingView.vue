@@ -1,0 +1,241 @@
+<script setup lang="ts">
+import path from 'path';
+import { onMounted, reactive, ref } from 'vue';
+import { BotConfig } from '@/types';
+
+const botList = ref<BotConfig[]>([]);
+const isShowModal = ref<boolean>(false);
+
+interface Modal {
+  botName?: string;
+  botPath?: string;
+}
+
+const createBotModal = reactive<Modal>({});
+
+const dataPath = LiteLoader.plugins.liteloader_nonebot.path.data;
+const version = LiteLoader.plugins.liteloader_nonebot.manifest['version'];
+
+const openExternal = (url: string) => {
+  LiteLoader.api.openExternal(url);
+};
+
+const getBots = async () => {
+  await window.liteloader_nonebot.getBots().then((data) => (botList.value = data));
+};
+
+const selectLocalFolder = async () => {
+  const result = await window.liteloader_nonebot.showOpenDialog({
+    title: '请选择文件夹',
+    properties: ['openDirectory'],
+    buttonLabel: '选择文件夹',
+  });
+  if (!result.canceled) {
+    createBotModal.botPath = result.filePaths[0];
+  }
+};
+
+const confirmModal = async () => {
+  if (!createBotModal.botName) {
+    alert('请输入 Bot 名称');
+    return;
+  }
+  if (!createBotModal.botPath) {
+    createBotModal.botPath = path.join(dataPath, 'app');
+  }
+
+  const botConfig: BotConfig = {
+    name: createBotModal.botName,
+    path: createBotModal.botPath,
+    autoStart: false,
+  };
+
+  await window.liteloader_nonebot.createProject(botConfig.path, { 'name': botConfig.name }).then(async () => {
+    await window.liteloader_nonebot.setBot(botConfig).then(() => {
+      isShowModal.value = false;
+    });
+  });
+
+  getBots();
+};
+
+onMounted(async () => {
+  await getBots();
+});
+</script>
+
+<template>
+  <setting-section data-title="机器人">
+    <setting-panel v-if="botList.length === 0">
+      <setting-list data-direction="row">
+        <setting-item>
+          <setting-text>当前还没有创建 Bot 喔</setting-text>
+          <setting-button data-type="primary" @click="isShowModal = true">即刻创建</setting-button>
+          <setting-button data-type="secondary">从本地导入</setting-button>
+        </setting-item>
+      </setting-list>
+    </setting-panel>
+    <setting-panel v-else>
+      <setting-list data-direction="column">
+        <setting-item>
+          <setting-text>共 {{ botList.length }} 个 Bot</setting-text>
+          <setting-button data-type="secondary" @click="isShowModal = true">创建 Bot</setting-button>
+        </setting-item>
+        <data-orientation data-orientation="horizontal"></data-orientation>
+        <setting-item v-for="bot in botList" :key="bot.name">
+          <setting-text>{{ bot.name }}</setting-text>
+          <setting-button data-type="primary">查看</setting-button>
+        </setting-item>
+      </setting-list>
+    </setting-panel>
+    <setting-modal v-if="isShowModal" data-title="创建 Bot" is-active>
+      <setting-section>
+        <setting-panel>
+          <setting-list data-direction="column">
+            <setting-item data-direction="column">
+              <setting-text style="margin-right: 20px">名称</setting-text>
+              <input
+                v-model="createBotModal.botName"
+                placeholder="请输入 Bot 名称"
+                class="input-text"
+                type="text"
+                spellcheck="false"
+              />
+            </setting-item>
+            <setting-item data-direction="column">
+              <div>
+                <div style="display: flex; align-items: center; margin-bottom: 2px">
+                  <setting-text>目录</setting-text>
+                  <setting-text data-type="secondary" style="margin-left: 5px; margin-right: 5px">-</setting-text>
+                  <setting-text data-type="secondary">留空则使用默认值</setting-text>
+                </div>
+                <input
+                  v-model="createBotModal.botPath"
+                  title="移除路径"
+                  class="input-text"
+                  type="text"
+                  spellcheck="false"
+                  readonly
+                  style="cursor: pointer"
+                  :placeholder="createBotModal.botPath ? createBotModal.botPath : '请选择 Bot 目录'"
+                  @click="createBotModal.botPath = ''"
+                />
+              </div>
+              <setting-button data-type="secondary" @click="selectLocalFolder">选择</setting-button>
+            </setting-item>
+            <!-- <setting-item>
+            <setting-text>Python 版本</setting-text>
+            <setting-select>
+              <setting-option data-value="3.9">3.9</setting-option>
+              <setting-option data-value="3.10" is-selected>3.10</setting-option>
+              <setting-option data-value="3.11">3.11</setting-option>
+              <setting-option data-value="3.12">3.12</setting-option>
+            </setting-select>
+          </setting-item> -->
+          </setting-list>
+        </setting-panel>
+        <div style="display: flex; justify-content: flex-end; gap: 5px; margin-bottom: 20px">
+          <setting-button data-type="secondary" @click="isShowModal = false">取消</setting-button>
+          <setting-button data-type="primary" @click="confirmModal">确定</setting-button>
+        </div>
+      </setting-section>
+    </setting-modal>
+  </setting-section>
+
+  <setting-section data-title="需知">
+    <setting-panel>
+      <setting-list data-direction="column">
+        <setting-item>
+          <div>
+            <setting-text>官方文档</setting-text>
+            <setting-text data-type="secondary">https://nonebot.dev</setting-text>
+          </div>
+          <setting-button
+            class="btn-official-website"
+            data-type="secondary"
+            @click="openExternal('https://nonebot.dev')"
+          >
+            进去瞅瞅
+          </setting-button>
+        </setting-item>
+        <setting-item>
+          <div>
+            <setting-text>社区文档</setting-text>
+            <setting-text data-type="secondary">https://x.none.bot</setting-text>
+          </div>
+          <setting-button
+            class="btn-community-website"
+            data-type="secondary"
+            @click="openExternal('https://x.none.bot')"
+          >
+            进去瞅瞅
+          </setting-button>
+        </setting-item>
+      </setting-list>
+    </setting-panel>
+  </setting-section>
+
+  <setting-section data-title="关于">
+    <setting-panel>
+      <setting-list data-direction="column">
+        <setting-item>
+          <div>
+            <setting-text>LiteLoader NoneBot - v{{ version }}</setting-text>
+            <setting-text data-type="secondary"
+              >在 QQ 上管理你的 NoneBot 应用 / Manage your NoneBot App on QQ</setting-text
+            >
+          </div>
+          <setting-button
+            data-type="secondary"
+            @click="openExternal('https://github.com/KomoriDev/LiteLoaderQQNT-NoneBot')"
+          >
+            Github
+          </setting-button>
+        </setting-item>
+        <setting-item>
+          <setting-text>赞助</setting-text>
+          <setting-button
+            data-type="secondary"
+            style="border-color: #8060da"
+            @click="openExternal('https://afdian.com/@komoridev')"
+          >
+            请杯咖啡
+          </setting-button>
+        </setting-item>
+        <setting-item>
+          <setting-text>开源协议</setting-text>
+          <setting-text data-type="secondary">AGPL-3.0 license</setting-text>
+        </setting-item>
+      </setting-list>
+    </setting-panel>
+  </setting-section>
+</template>
+
+<style scoped>
+.input-text {
+  align-self: normal;
+  height: 24px;
+  flex: 1;
+  border-radius: 4px;
+  margin-right: 16px;
+  transition: all 100ms ease-out;
+  padding-left: 5px;
+  background-color: var(--overlay_active);
+}
+
+.input-text:last-child {
+  margin-right: 0;
+}
+
+@media (prefers-color-scheme: light) {
+  .input-text {
+    color: black;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .input-text {
+    color: white;
+  }
+}
+</style>

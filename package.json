@@ -12,18 +12,29 @@
   },
   "author": "KomoriDev",
   "license": "AGPL-3.0-only",
+  "dependencies": {
+    "pinia": "^2.1.7",
+    "vue": "^3.4.29",
+    "vue-router": "4"
+  },
   "devDependencies": {
     "@electron-toolkit/eslint-config-ts": "^1.0.1",
     "@electron-toolkit/tsconfig": "^1.0.1",
+    "@tsconfig/node22": "^22.0.0",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.5.5",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "@vitejs/plugin-vue-jsx": "^4.0.0",
+    "@vue/tsconfig": "^0.5.1",
     "electron": "^29.1.4",
     "electron-vite": "^2.1.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.30.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-vue": "^9.28.0",
     "fs-extra": "^11.2.0",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
@@ -32,7 +43,11 @@
     "unplugin-zip-pack": "^1.0.1",
     "vite": "^5.4.5",
     "vite-plugin-checker": "^0.6.4",
-    "vite-plugin-cp": "^4.0.8"
+    "vite-plugin-cp": "^4.0.8",
+    "vite-plugin-css-injected-by-js": "^3.5.2",
+    "vite-plugin-vue-devtools": "^7.3.1",
+    "vue-eslint-parser": "^9.4.3",
+    "vue-tsc": "^2.0.21"
   },
   "husky": {
     "hooks": {

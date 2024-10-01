@@ -7,9 +7,10 @@
   "extends": [
     "eslint-config-prettier",
     "eslint:recommended",
+    "plugin:vue/vue3-recommended",
+    "plugin:import/typescript",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
-    // "@electron-toolkit/eslint-config-ts/recommended",
   ],
   "overrides": [
     {
@@ -22,17 +23,20 @@
       }
     }
   ],
-  "ignorePatterns": ["node_modules/**/*", "dist/**/*", "src/template/**/*", "*.html", "*.svg"],
-  "parser": "@typescript-eslint/parser",
+  "ignorePatterns": ["node_modules/**/*", "dist/**/*", "src/template/**/*", "*.html", "*.css", "*.svg"],
+  "parser": "vue-eslint-parser",
   "parserOptions": {
+    "parser": "@typescript-eslint/parser",
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["vue", "@typescript-eslint"],
   "rules": {
     "linebreak-style": ["error", "unix"],
     "indent": ["error", 2],
     "quotes": ["error", "single"],
-    "semi": ["error", "always"]
+    "semi": ["error", "always"],
+    "no-undef": "off",
+    "vue/multi-word-component-names": "off"
   }
 }

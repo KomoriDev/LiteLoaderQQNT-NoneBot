@@ -5,7 +5,8 @@
     "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@@/*": ["src/renderer/*"]
     },
     "types": ["vite/client", "electron-vite/node"]
   }

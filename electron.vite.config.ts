@@ -1,12 +1,17 @@
+import { resolve } from 'path';
 import { defineConfig } from 'electron-vite';
 import { defineConfig as defineViteConfig } from 'vite';
-import { resolve } from 'path';
-import viteChecker from 'vite-plugin-checker';
+
+import vue from '@vitejs/plugin-vue';
 import viteCp from 'vite-plugin-cp';
+import viteChecker from 'vite-plugin-checker';
 import viteZipPack from 'unplugin-zip-pack/vite';
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
+
 import PluginManifest from './manifest.json';
 
 const SRC_DIR = resolve(__dirname, './src');
+const RENDER_DIR = resolve(__dirname, './src/renderer');
 const OUTPUT_DIR = resolve(__dirname, './dist');
 
 const BaseConfig = defineViteConfig({
@@ -14,6 +19,7 @@ const BaseConfig = defineViteConfig({
   resolve: {
     alias: {
       '@': SRC_DIR,
+      '@@': RENDER_DIR,
     },
   },
 });
@@ -48,6 +54,7 @@ export default defineConfig({
     ...BaseConfig,
 
     plugins: [
+      vue(),
       viteChecker({
         typescript: true,
         eslint: {
@@ -60,16 +67,17 @@ export default defineConfig({
           { src: './src/public', dest: 'dist/public' },
           { src: './src/template', dest: 'dist/template' },
           { src: './src/template/src', dest: 'dist/template/src' },
-          { src: './src/renderer/views', dest: 'dist/renderer/views' },
         ],
       }),
       viteZipPack({
         in: OUTPUT_DIR,
         out: resolve(__dirname, `./${PluginManifest.slug}.zip`),
       }),
+      cssInjectedByJsPlugin(),
     ],
     build: {
       minify: 'esbuild',
+      cssCodeSplit: true,
       outDir: resolve(OUTPUT_DIR, './renderer'),
       lib: {
         entry: resolve(SRC_DIR, './renderer/index.ts'),
@@ -79,6 +87,9 @@ export default defineConfig({
       rollupOptions: {
         input: resolve(SRC_DIR, './renderer/index.ts'),
       },
+    },
+    define: {
+      'process.env': {},
     },
   }),
 });
