@@ -4,6 +4,8 @@ import { onMounted, reactive, ref } from 'vue';
 import { BotConfig, Python } from '@/types';
 import { router } from '@@/router';
 
+import { Button } from '@@/components/ui/button';
+
 const pythonList = ref<Python[]>([]);
 const botList = ref<BotConfig[]>([]);
 const isShowModal = ref<boolean>(false);
@@ -103,15 +105,15 @@ onMounted(async () => {
       <setting-list data-direction="row">
         <setting-item>
           <setting-text>当前还没有创建 Bot 喔</setting-text>
-          <setting-button
-            data-type="primary"
+          <Button
+            variant="primary"
             @click="
               isShowModal = true;
               isButtonDisabled = false;
             "
-            >即刻创建</setting-button
+            >即刻创建</Button
           >
-          <setting-button data-type="secondary">从本地导入</setting-button>
+          <Button variant="secondary">从本地导入</Button>
         </setting-item>
       </setting-list>
     </setting-panel>
@@ -119,19 +121,19 @@ onMounted(async () => {
       <setting-list data-direction="column">
         <setting-item>
           <setting-text>共 {{ botList.length }} 个 Bot</setting-text>
-          <setting-button
-            data-type="secondary"
+          <Button
+            variant="secondary"
             @click="
               isShowModal = true;
               isButtonDisabled = false;
             "
-            >创建 Bot</setting-button
+            >创建 Bot</Button
           >
         </setting-item>
         <data-orientation data-orientation="horizontal"></data-orientation>
         <setting-item v-for="(bot, index) in botList" :key="index">
           <setting-text>{{ bot.name }}</setting-text>
-          <setting-button data-type="primary" @click="router.push(`/bot/${index}`)">查看</setting-button>
+          <Button variant="primary" @click="router.push(`/bot/${index}`)">查看</Button>
         </setting-item>
       </setting-list>
     </setting-panel>
@@ -168,19 +170,19 @@ onMounted(async () => {
                   @click="createBotModal.botPath = ''"
                 />
               </div>
-              <setting-button data-type="secondary" @click="selectLocalFolder">选择</setting-button>
+              <Button variant="secondary" @click="selectLocalFolder">选择</Button>
             </setting-item>
           </setting-list>
         </setting-panel>
         <div style="display: flex; justify-content: flex-end; gap: 5px; margin-bottom: 20px">
-          <setting-button data-type="secondary" @click="isShowModal = false">取消</setting-button>
-          <setting-button
-            data-type="primary"
+          <Button variant="secondary" @click="isShowModal = false">取消</Button>
+          <Button
+            variant="primary"
             :style="isButtonDisabled ? 'opacity: 0.3; cursor: not-allowed; pointer-events: none;' : ''"
             @click="confirmModal"
           >
             确定
-          </setting-button>
+          </Button>
         </div>
       </setting-section>
     </setting-modal>
@@ -194,26 +196,14 @@ onMounted(async () => {
             <setting-text>官方文档</setting-text>
             <setting-text data-type="secondary">https://nonebot.dev</setting-text>
           </div>
-          <setting-button
-            class="btn-official-website"
-            data-type="secondary"
-            @click="openExternal('https://nonebot.dev')"
-          >
-            进去瞅瞅
-          </setting-button>
+          <Button variant="secondary" @click="openExternal('https://nonebot.dev')"> 进去瞅瞅 </Button>
         </setting-item>
         <setting-item>
           <div>
             <setting-text>社区文档</setting-text>
             <setting-text data-type="secondary">https://x.none.bot</setting-text>
           </div>
-          <setting-button
-            class="btn-community-website"
-            data-type="secondary"
-            @click="openExternal('https://x.none.bot')"
-          >
-            进去瞅瞅
-          </setting-button>
+          <Button variant="secondary" @click="openExternal('https://x.none.bot')"> 进去瞅瞅 </Button>
         </setting-item>
       </setting-list>
     </setting-panel>
@@ -229,22 +219,19 @@ onMounted(async () => {
               >在 QQ 上管理你的 NoneBot 应用 / Manage your NoneBot App on QQ</setting-text
             >
           </div>
-          <setting-button
-            data-type="secondary"
-            @click="openExternal('https://github.com/KomoriDev/LiteLoaderQQNT-NoneBot')"
-          >
+          <Button variant="secondary" @click="openExternal('https://github.com/KomoriDev/LiteLoaderQQNT-NoneBot')">
             Github
-          </setting-button>
+          </Button>
         </setting-item>
         <setting-item>
           <setting-text>赞助</setting-text>
-          <setting-button
-            data-type="secondary"
+          <Button
+            variant="secondary"
             style="border-color: #8060da"
             @click="openExternal('https://afdian.com/@komoridev')"
           >
             请杯咖啡
-          </setting-button>
+          </Button>
         </setting-item>
         <setting-item>
           <setting-text>开源协议</setting-text>

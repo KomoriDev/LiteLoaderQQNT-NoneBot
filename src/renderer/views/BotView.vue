@@ -4,6 +4,7 @@ import { BotConfig } from '@/types';
 import { useRoute } from 'vue-router';
 import ChevronLeft from '@@/components/icons/ChevronLeft.vue';
 import { router } from '@@/router';
+import { Button } from '@@/components/ui/button';
 
 const route = useRoute();
 
@@ -21,9 +22,9 @@ onMounted(async () => {
 <template>
   <header class="header">
     <div class="flex gap-2 items-center">
-      <button class="p-0.5 border rounded border-standard hover:opacity-75" @click="router.push({ name: 'home' })">
-        <ChevronLeft class="w-3.5 h-3.5" />
-      </button>
+      <Button variant="secondary" size="icon" @click="router.push({ name: 'home' })">
+        <ChevronLeft class="w-3 h-3" />
+      </Button>
       <div class="header-title">{{ bot?.name }}</div>
     </div>
   </header>
@@ -38,6 +39,17 @@ onMounted(async () => {
         <setting-item>
           <setting-text>Python</setting-text>
           <setting-text data-type="secondary">{{ bot?.python.version }}</setting-text>
+        </setting-item>
+      </setting-list>
+    </setting-panel>
+  </setting-section>
+
+  <setting-section data-title="管理">
+    <setting-panel>
+      <setting-list data-direction="column">
+        <setting-item>
+          <setting-text>进程</setting-text>
+          <Button variant="primary">启动</Button>
         </setting-item>
       </setting-list>
     </setting-panel>
