@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx electron-vite build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint . --ext .vue,.js,.ts --ignore-path .gitignore",
+    "lint": "eslint \"src/**/*.{vue,js,ts}\" --ignore-path .gitignore",
     "format": "prettier --write ./**/*.{html,vue,js,ts,jsx,tsx,json,md} --ignore-path .gitignore",
     "prepare": "husky"
   },
