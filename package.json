@@ -4,9 +4,8 @@
   "description": "在 QQ 上管理你的 NoneBot 应用 / Manage your NoneBot App on QQ",
   "main": "index.js",
   "scripts": {
-    "build": "npx electron-vite build",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint \"src/**/*.{vue,js,ts}\" --ignore-path .gitignore",
+    "build": "electron-vite build",
+    "lint": "eslint . --ext .vue,.js,.ts --ignore-path .gitignore",
     "format": "prettier --write ./**/*.{html,vue,js,ts,jsx,tsx,json,md} --ignore-path .gitignore",
     "prepare": "husky"
   },
