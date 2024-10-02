@@ -39,7 +39,7 @@
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "prettier": "3.3.3",
-    "typescript": "^5.6.2",
+    "typescript": "^5.5.4",
     "unplugin-zip-pack": "^1.0.1",
     "vite": "^5.4.5",
     "vite-plugin-checker": "^0.6.4",
