@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import { ipcMain, dialog, OpenDialogOptions } from 'electron';
 import { readJsonFile, writeJsonFile, processTemplate } from '@/lib';
 import { BotConfig } from '@/types';
+import { getInstalledPython, syncBotDependencies } from './uv';
 
 const dataPath = LiteLoader.plugins.liteloader_nonebot.path.data;
 const pluginPath = LiteLoader.plugins.liteloader_nonebot.path.plugin;
@@ -28,3 +29,11 @@ ipcMain.handle(
     return await processTemplate(templatePath, output, replacements);
   }
 );
+
+ipcMain.handle('LiteLoader.liteloader_nonebot.getInstalledPython', async () => {
+  return await getInstalledPython();
+});
+
+ipcMain.handle('LiteLoader.liteloader_nonebot.syncBotDependencies', async (_, bot: BotConfig) => {
+  return await syncBotDependencies(bot);
+});

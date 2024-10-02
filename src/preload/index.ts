@@ -1,15 +1,17 @@
 import { contextBridge, ipcRenderer, OpenDialogOptions, OpenDialogReturnValue } from 'electron';
-import { BotConfig, NontBotConfig } from '@/types';
+import { BotConfig, NontBotConfig, Python } from '@/types';
 
 export type ContextBridgeApi = {
   getBots: () => Promise<BotConfig[]>;
   getConfig: () => null;
   getBotConfig: () => NontBotConfig;
+  getInstalledPython: () => Promise<Python[]>;
   setBot: (config: BotConfig) => Promise<void>;
   setConfig: (config: object) => void;
   setBotConfig: (config: object) => void;
   showOpenDialog: (data: OpenDialogOptions) => Promise<OpenDialogReturnValue>;
   createProject: (output: string, replacements: Record<string, string>) => Promise<void>;
+  syncBotDependencies: (bot: BotConfig) => Promise<void>;
 };
 
 const exposedApi: ContextBridgeApi = {
@@ -19,6 +21,8 @@ const exposedApi: ContextBridgeApi = {
   getConfig: () => ipcRenderer.sendSync('LiteLoader.liteloader_nonebot.getConfig'),
   // 获取 Bot 配置文件
   getBotConfig: () => ipcRenderer.sendSync('LiteLoader.liteloader_nonebot.getBotConfig'),
+  // 获取系统 Python 信息
+  getInstalledPython: () => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.getInstalledPython'),
   // 添加 Bot
   setBot: (config) => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.setBot', config),
   // 更新 Liteloader 插件配置文件
@@ -30,6 +34,8 @@ const exposedApi: ContextBridgeApi = {
   // 创建 Bot 项目
   createProject: (output, replacements) =>
     ipcRenderer.invoke('LiteLoader.liteloader_nonebot.createProject', output, replacements),
+  // 同步 Bot 依赖
+  syncBotDependencies: (bot) => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.syncBotDependencies', bot),
 };
 
 contextBridge.exposeInMainWorld('liteloader_nonebot', exposedApi);

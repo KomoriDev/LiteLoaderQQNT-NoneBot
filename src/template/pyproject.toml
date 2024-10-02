@@ -3,6 +3,7 @@ name = "{{ name }}"
 version = "0.1.0"
 description = "{{ name }}"
 readme = "README.md"
+requires-python = ">={{ pyVersion }}"
 dependencies = [
     "nonebot2[fastapi]>=2.3.3",
 ]

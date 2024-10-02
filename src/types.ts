@@ -1,3 +1,8 @@
+export interface Python {
+  version: string;
+  path: string;
+}
+
 export interface BotConfig {
   /** Bot 名称 */
   name: string;
@@ -5,6 +10,8 @@ export interface BotConfig {
   path: string;
   /** 是否自启动 */
   autoStart: boolean;
+  /** Python 信息 */
+  python: Python;
 }
 
 export interface NontBotConfig {

@@ -65,8 +65,8 @@ export default defineConfig({
         targets: [
           { src: './manifest.json', dest: 'dist' },
           { src: './src/public', dest: 'dist/public' },
-          { src: './src/template', dest: 'dist/template' },
-          { src: './src/template/src', dest: 'dist/template/src' },
+          { src: './src/template', dest: 'dist/template', flatten: false },
+          { src: './src/template/.python-version', dest: 'dist/template' },
         ],
       }),
       viteZipPack({

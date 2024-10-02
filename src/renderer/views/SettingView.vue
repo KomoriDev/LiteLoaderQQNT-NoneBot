@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import path from 'path';
 import { onMounted, reactive, ref } from 'vue';
-import { BotConfig } from '@/types';
+import { BotConfig, Python } from '@/types';
+import { router } from '@@/router';
 
+const pythonList = ref<Python[]>([]);
 const botList = ref<BotConfig[]>([]);
 const isShowModal = ref<boolean>(false);
+const isButtonDisabled = ref<boolean>(false);
 
 interface Modal {
   botName?: string;
@@ -36,27 +39,57 @@ const selectLocalFolder = async () => {
 };
 
 const confirmModal = async () => {
-  if (!createBotModal.botName) {
-    alert('请输入 Bot 名称');
-    return;
-  }
-  if (!createBotModal.botPath) {
-    createBotModal.botPath = path.join(dataPath, 'app');
-  }
+  isButtonDisabled.value = true;
+  try {
+    const data = await window.liteloader_nonebot.getInstalledPython();
 
-  const botConfig: BotConfig = {
-    name: createBotModal.botName,
-    path: createBotModal.botPath,
-    autoStart: false,
-  };
-
-  await window.liteloader_nonebot.createProject(botConfig.path, { 'name': botConfig.name }).then(async () => {
-    await window.liteloader_nonebot.setBot(botConfig).then(() => {
-      isShowModal.value = false;
+    data.forEach((py) => {
+      pythonList.value.push(py);
     });
-  });
 
-  getBots();
+    if (!createBotModal.botName) {
+      alert('请输入 Bot 名称');
+      return;
+    }
+
+    if (!createBotModal.botPath) {
+      createBotModal.botPath = path.join(dataPath, 'app');
+    }
+
+    const botConfig: BotConfig = {
+      name: createBotModal.botName,
+      path: createBotModal.botPath,
+      autoStart: false,
+      python: pythonList.value[0],
+    };
+
+    const sanitizedBotConfig: BotConfig = {
+      ...botConfig,
+      path: botConfig.path.replace(/\\/g, '/'),
+      python: {
+        ...botConfig.python,
+        path: botConfig.python.path.replace(/\\/g, '/'),
+      },
+    };
+
+    await window.liteloader_nonebot.createProject(botConfig.path, {
+      'name': botConfig.name,
+      'pyVersion': botConfig.python.version.split('.').slice(0, 2).join('.'),
+    });
+    await window.liteloader_nonebot.setBot(sanitizedBotConfig);
+
+    try {
+      await window.liteloader_nonebot.syncBotDependencies(sanitizedBotConfig);
+    } catch (error) {
+      console.error(error);
+    }
+
+    isShowModal.value = false;
+
+    getBots();
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 onMounted(async () => {
@@ -70,7 +103,14 @@ onMounted(async () => {
       <setting-list data-direction="row">
         <setting-item>
           <setting-text>当前还没有创建 Bot 喔</setting-text>
-          <setting-button data-type="primary" @click="isShowModal = true">即刻创建</setting-button>
+          <setting-button
+            data-type="primary"
+            @click="
+              isShowModal = true;
+              isButtonDisabled = false;
+            "
+            >即刻创建</setting-button
+          >
           <setting-button data-type="secondary">从本地导入</setting-button>
         </setting-item>
       </setting-list>
@@ -79,12 +119,19 @@ onMounted(async () => {
       <setting-list data-direction="column">
         <setting-item>
           <setting-text>共 {{ botList.length }} 个 Bot</setting-text>
-          <setting-button data-type="secondary" @click="isShowModal = true">创建 Bot</setting-button>
+          <setting-button
+            data-type="secondary"
+            @click="
+              isShowModal = true;
+              isButtonDisabled = false;
+            "
+            >创建 Bot</setting-button
+          >
         </setting-item>
         <data-orientation data-orientation="horizontal"></data-orientation>
-        <setting-item v-for="bot in botList" :key="bot.name">
+        <setting-item v-for="(bot, index) in botList" :key="index">
           <setting-text>{{ bot.name }}</setting-text>
-          <setting-button data-type="primary">查看</setting-button>
+          <setting-button data-type="primary" @click="router.push(`/bot/${index}`)">查看</setting-button>
         </setting-item>
       </setting-list>
     </setting-panel>
@@ -123,20 +170,17 @@ onMounted(async () => {
               </div>
               <setting-button data-type="secondary" @click="selectLocalFolder">选择</setting-button>
             </setting-item>
-            <!-- <setting-item>
-            <setting-text>Python 版本</setting-text>
-            <setting-select>
-              <setting-option data-value="3.9">3.9</setting-option>
-              <setting-option data-value="3.10" is-selected>3.10</setting-option>
-              <setting-option data-value="3.11">3.11</setting-option>
-              <setting-option data-value="3.12">3.12</setting-option>
-            </setting-select>
-          </setting-item> -->
           </setting-list>
         </setting-panel>
         <div style="display: flex; justify-content: flex-end; gap: 5px; margin-bottom: 20px">
           <setting-button data-type="secondary" @click="isShowModal = false">取消</setting-button>
-          <setting-button data-type="primary" @click="confirmModal">确定</setting-button>
+          <setting-button
+            data-type="primary"
+            :style="isButtonDisabled ? 'opacity: 0.3; cursor: not-allowed; pointer-events: none;' : ''"
+            @click="confirmModal"
+          >
+            确定
+          </setting-button>
         </div>
       </setting-section>
     </setting-modal>
