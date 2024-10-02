@@ -32,7 +32,7 @@ const ConfigBuilder = (type: 'main' | 'preload') =>
       viteChecker({
         typescript: true,
         eslint: {
-          lintCommand: 'eslint --fix src/**/* --ext .js,.ts',
+          lintCommand: 'eslint . --ext .vue,.js,.ts --ignore-path .gitignore',
         },
       }),
     ],
