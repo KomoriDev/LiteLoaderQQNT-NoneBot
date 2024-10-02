@@ -2,6 +2,8 @@
 import { onMounted, ref } from 'vue';
 import { BotConfig } from '@/types';
 import { useRoute } from 'vue-router';
+import ChevronLeft from '@@/components/icons/ChevronLeft.vue';
+import { router } from '@@/router';
 
 const route = useRoute();
 
@@ -18,7 +20,12 @@ onMounted(async () => {
 
 <template>
   <header class="header">
-    <div class="header-title">{{ bot?.name }}</div>
+    <div class="flex gap-2 items-center">
+      <button class="p-0.5 border rounded border-standard hover:opacity-75" @click="router.push({ name: 'home' })">
+        <ChevronLeft class="w-3.5 h-3.5" />
+      </button>
+      <div class="header-title">{{ bot?.name }}</div>
+    </div>
   </header>
 
   <setting-section data-title="概览">
