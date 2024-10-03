@@ -115,15 +115,17 @@ onMounted(async () => {
       <setting-list data-direction="row">
         <setting-item>
           <setting-text>当前还没有创建 Bot 喔</setting-text>
-          <Button
-            variant="primary"
-            @click="
-              isShowModal = true;
-              isButtonDisabled = false;
-            "
-            >即刻创建</Button
-          >
-          <Button variant="secondary">从本地导入</Button>
+          <span class="flex gap-1 justify-center mt-0.5">
+            <Button
+              variant="primary"
+              @click="
+                isShowModal = true;
+                isButtonDisabled = false;
+              "
+              >即刻创建</Button
+            >
+            <Button variant="secondary">从本地导入</Button>
+          </span>
         </setting-item>
       </setting-list>
     </setting-panel>
@@ -234,7 +236,7 @@ onMounted(async () => {
           </Button>
         </setting-item>
         <setting-item>
-          <div class="flex gap-5">
+          <div class="flex gap-1">
             <setting-text>赞助</setting-text>
             <setting-text v-if="new Date().getDay() === 4" data-type="secondary">
               KFCError: KFC Crazy Thursday V me ￥50
