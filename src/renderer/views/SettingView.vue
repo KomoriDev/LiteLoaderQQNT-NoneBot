@@ -51,6 +51,7 @@ const confirmModal = async () => {
 
     if (!createBotModal.botName) {
       alert('请输入 Bot 名称');
+      isButtonDisabled.value = false;
       return;
     }
 
