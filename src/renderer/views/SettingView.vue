@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import path from 'path';
+import { toast } from 'vue-sonner';
 import { onMounted, reactive, ref } from 'vue';
 import { BotConfig, Python } from '@/types';
 import { router } from '@@/router';
@@ -41,58 +42,66 @@ const selectLocalFolder = async () => {
 };
 
 const confirmModal = async () => {
-  isButtonDisabled.value = true;
-  try {
-    const data = await window.liteloader_nonebot.getInstalledPython();
+  await toast.promise(
+    (async () => {
+      isButtonDisabled.value = true;
 
-    data.forEach((py) => {
-      pythonList.value.push(py);
-    });
+      try {
+        const data = await window.liteloader_nonebot.getInstalledPython();
 
-    if (!createBotModal.botName) {
-      alert('请输入 Bot 名称');
-      isButtonDisabled.value = false;
-      return;
+        data.forEach((py) => {
+          pythonList.value.push(py);
+        });
+
+        if (!createBotModal.botName) {
+          isButtonDisabled.value = false;
+          throw new Error('请输入 Bot 名称');
+        }
+
+        if (!createBotModal.botPath) {
+          createBotModal.botPath = path.join(dataPath, 'app');
+        }
+
+        const botConfig: BotConfig = {
+          name: createBotModal.botName,
+          path: createBotModal.botPath,
+          autoStart: false,
+          python: pythonList.value[0],
+        };
+
+        const sanitizedBotConfig: BotConfig = {
+          ...botConfig,
+          path: botConfig.path.replace(/\\/g, '/'),
+          python: {
+            ...botConfig.python,
+            path: botConfig.python.path.replace(/\\/g, '/'),
+          },
+        };
+
+        await window.liteloader_nonebot.createProject(botConfig.path, {
+          'name': botConfig.name,
+          'pyVersion': botConfig.python.version.split('.').slice(0, 2).join('.'),
+        });
+
+        await window.liteloader_nonebot.setBot(sanitizedBotConfig);
+
+        await window.liteloader_nonebot.syncBotDependencies(sanitizedBotConfig);
+
+        isShowModal.value = false;
+        getBots();
+
+        return `机器人『 ${botConfig.name} 』创建成功`;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    })(),
+    {
+      loading: '创建中，请稍候...',
+      success: (message: string) => message,
+      error: (error) => `创建失败: ${error.message || error}`,
     }
-
-    if (!createBotModal.botPath) {
-      createBotModal.botPath = path.join(dataPath, 'app');
-    }
-
-    const botConfig: BotConfig = {
-      name: createBotModal.botName,
-      path: createBotModal.botPath,
-      autoStart: false,
-      python: pythonList.value[0],
-    };
-
-    const sanitizedBotConfig: BotConfig = {
-      ...botConfig,
-      path: botConfig.path.replace(/\\/g, '/'),
-      python: {
-        ...botConfig.python,
-        path: botConfig.python.path.replace(/\\/g, '/'),
-      },
-    };
-
-    await window.liteloader_nonebot.createProject(botConfig.path, {
-      'name': botConfig.name,
-      'pyVersion': botConfig.python.version.split('.').slice(0, 2).join('.'),
-    });
-    await window.liteloader_nonebot.setBot(sanitizedBotConfig);
-
-    try {
-      await window.liteloader_nonebot.syncBotDependencies(sanitizedBotConfig);
-    } catch (error) {
-      console.error(error);
-    }
-
-    isShowModal.value = false;
-
-    getBots();
-  } catch (error) {
-    console.error(error);
-  }
+  );
 };
 
 onMounted(async () => {

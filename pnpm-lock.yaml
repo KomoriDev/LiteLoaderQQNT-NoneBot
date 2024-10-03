@@ -23,6 +23,9 @@ dependencies:
   vue-router:
     specifier: '4'
     version: 4.4.5(vue@3.5.10)
+  vue-sonner:
+    specifier: ^1.2.1
+    version: 1.2.1
 
 devDependencies:
   '@electron-toolkit/eslint-config-ts':
@@ -4917,6 +4920,10 @@ packages:
     dependencies:
       '@vue/devtools-api': 6.6.4
       vue: 3.5.10(typescript@5.5.4)
+    dev: false
+
+  /vue-sonner@1.2.1:
+    resolution: {integrity: sha512-J5+TwkayiBkieYBG8PGk5PMys8+UZxDmT/CCaX9otDzRONRr5hgTgo2Fha2krUFnUw1d576jsNGXhmAL06ixfA==}
     dev: false
 
   /vue-tsc@2.1.6(typescript@5.5.4):
