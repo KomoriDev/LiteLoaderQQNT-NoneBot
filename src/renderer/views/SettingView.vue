@@ -234,13 +234,18 @@ onMounted(async () => {
           </Button>
         </setting-item>
         <setting-item>
-          <setting-text>赞助</setting-text>
+          <div class="flex gap-5">
+            <setting-text>赞助</setting-text>
+            <setting-text v-if="new Date().getDay() === 4" data-type="secondary">
+              KFCError: KFC Crazy Thursday V me ￥50
+            </setting-text>
+          </div>
           <Button
             variant="secondary"
             style="border-color: #8060da"
             @click="openExternal('https://afdian.com/@komoridev')"
           >
-            请杯咖啡
+            {{ new Date().getDay() === 4 ? 'V我50' : '请杯咖啡' }}
           </Button>
         </setting-item>
         <setting-item>
