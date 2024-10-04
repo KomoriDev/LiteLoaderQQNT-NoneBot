@@ -5,7 +5,6 @@ import { log } from '@/lib';
 export async function readJsonFile<T>(filePath: string): Promise<T> {
   const fullPath = path.resolve(__dirname, filePath);
   const fileContent = await fs.readFile(fullPath, 'utf-8');
-  log('json', JSON.parse(fileContent) as string);
   return JSON.parse(fileContent) as T;
 }
 

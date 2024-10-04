@@ -1,5 +1,5 @@
 import path from 'path';
-import fs from 'fs/promises';
+import fs, { rm } from 'fs/promises';
 import { ipcMain, dialog, OpenDialogOptions } from 'electron';
 import { readJsonFile, writeJsonFile, processTemplate } from '@/lib';
 import { BotConfig } from '@/types';
@@ -18,6 +18,16 @@ ipcMain.handle('LiteLoader.liteloader_nonebot.showOpenDialog', async (_, data: O
 
 ipcMain.handle('LiteLoader.liteloader_nonebot.setBot', async (_, config: BotConfig) => {
   return await writeJsonFile<BotConfig>(path.join(dataPath, 'bots.json'), config);
+});
+
+ipcMain.handle('LiteLoader.liteloader_nonebot.deleteBot', async (_, id: string, folderPath: string) => {
+  const jsonPath = path.join(dataPath, 'bots.json');
+  const jsonData = await readJsonFile<BotConfig[]>(jsonPath);
+
+  jsonData.splice(Number(id), 1);
+
+  await fs.writeFile(jsonPath, JSON.stringify(jsonData, null, 2), 'utf-8');
+  await rm(folderPath, { recursive: true, force: true });
 });
 
 ipcMain.handle(

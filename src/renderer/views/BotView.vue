@@ -1,11 +1,20 @@
 <script setup lang="ts">
+import { toast } from 'vue-sonner';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { ChevronLeft } from 'lucide-vue-next';
+import { ChevronLeft, Ellipsis, Folder, Trash2 } from 'lucide-vue-next';
 
 import { router } from '@@/router';
 import { BotConfig } from '@/types';
 import { Button } from '@@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuGroup,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../components/ui/dropdown-menu';
 
 const route = useRoute();
 
@@ -15,6 +24,21 @@ const getBot = async () => {
   await window.liteloader_nonebot.getBots().then((data) => (bot.value = data[Number(route.params.id as string)]));
 };
 
+const openBotFolder = () => {
+  LiteLoader.api.openPath(bot.value!.path);
+};
+
+const deleteBot = async () => {
+  try {
+    await window.liteloader_nonebot.deleteBot(route.params.id as string, bot.value!.path);
+
+    toast.success('操作成功', { description: `机器人『 ${bot.value!.name} 』删除成功` });
+    router.push({ name: 'home' });
+  } catch (error) {
+    toast.error('操作失败', { description: String(error) });
+  }
+};
+
 onMounted(async () => {
   await getBot();
 });
@@ -22,12 +46,34 @@ onMounted(async () => {
 
 <template>
   <header class="header">
-    <div class="flex gap-2 items-center">
+    <nav class="flex gap-2 items-center">
       <Button variant="secondary" size="icon" @click="router.push({ name: 'home' })">
         <ChevronLeft class="w-3 h-3" />
       </Button>
-      <div class="header-title">{{ bot?.name }}</div>
-    </div>
+      <p>{{ bot?.name }}</p>
+    </nav>
+    <nav>
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button class="border-0" variant="secondary" size="icon">
+            <Ellipsis class="w-3 h-3" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent class="w-40 mr-3 bg-[#ffffff] dark:bg-[#1b1b1b]">
+          <DropdownMenuGroup>
+            <DropdownMenuItem @click="openBotFolder">
+              <Folder class="mr-2 h-4 w-4" />
+              <span>打开文件所在位置</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem @click="deleteBot">
+            <Trash2 class="mr-2 h-4 w-4" />
+            <span>删除</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </nav>
   </header>
 
   <setting-section data-title="概览">

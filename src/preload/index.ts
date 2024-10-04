@@ -9,6 +9,7 @@ export type ContextBridgeApi = {
   setBot: (config: BotConfig) => Promise<void>;
   setConfig: (config: object) => void;
   setBotConfig: (config: object) => void;
+  deleteBot: (id: string, path: string) => Promise<void>;
   showOpenDialog: (data: OpenDialogOptions) => Promise<OpenDialogReturnValue>;
   createProject: (output: string, replacements: Record<string, string>) => Promise<void>;
   syncBotDependencies: (bot: BotConfig) => Promise<void>;
@@ -29,6 +30,8 @@ const exposedApi: ContextBridgeApi = {
   setConfig: (config) => ipcRenderer.send('LiteLoader.liteloader_nonebot.setConfig', config),
   // 更新 Bot 配置文件
   setBotConfig: (config) => ipcRenderer.send('LiteLoader.liteloader_nonebot.setBotConfig', config),
+  // 删除 Bot
+  deleteBot: (id, path) => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.deleteBot', id, path),
   // 通用文件选择窗口
   showOpenDialog: (data) => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.showOpenDialog', data),
   // 创建 Bot 项目
