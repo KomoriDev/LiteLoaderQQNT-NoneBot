@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { BotConfig } from '@/types';
 import { useRoute } from 'vue-router';
-import ChevronLeft from '@@/components/icons/ChevronLeft.vue';
+import { ChevronLeft } from 'lucide-vue-next';
+
 import { router } from '@@/router';
+import { BotConfig } from '@/types';
 import { Button } from '@@/components/ui/button';
 
 const route = useRoute();
