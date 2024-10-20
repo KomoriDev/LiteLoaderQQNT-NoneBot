@@ -18,6 +18,7 @@
     "pinia": "^2.1.7",
     "radix-vue": "^1.9.6",
     "tailwind-merge": "^2.5.2",
+    "tree-kill": "^1.2.2",
     "vue": "^3.4.29",
     "vue-router": "4",
     "vue-sonner": "^1.2.1"

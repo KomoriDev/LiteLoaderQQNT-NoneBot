@@ -1,9 +1,13 @@
 import path from 'path';
+import treeKill from 'tree-kill';
 import fs, { rm } from 'fs/promises';
-import { ipcMain, dialog, OpenDialogOptions } from 'electron';
-import { readJsonFile, writeJsonFile, processTemplate } from '@/lib';
+import { spawn } from 'child_process';
+import { ipcMain, dialog, OpenDialogOptions, BrowserWindow } from 'electron';
+
 import { BotConfig } from '@/types';
+import { getBotConfig, updateBotConfig } from './config';
 import { getInstalledPython, syncBotDependencies } from './uv';
+import { readJsonFile, writeJsonFile, processTemplate, logStorage } from '@/lib';
 
 const dataPath = LiteLoader.plugins.liteloader_nonebot.path.data;
 const pluginPath = LiteLoader.plugins.liteloader_nonebot.path.plugin;
@@ -17,7 +21,7 @@ ipcMain.handle('LiteLoader.liteloader_nonebot.showOpenDialog', async (_, data: O
 });
 
 ipcMain.handle('LiteLoader.liteloader_nonebot.setBot', async (_, config: BotConfig) => {
-  return await writeJsonFile<BotConfig>(path.join(dataPath, 'bots.json'), config);
+  return await writeJsonFile<BotConfig>(path.join(dataPath, 'bots.json'), [config]);
 });
 
 ipcMain.handle('LiteLoader.liteloader_nonebot.deleteBot', async (_, id: string, folderPath: string) => {
@@ -46,4 +50,48 @@ ipcMain.handle('LiteLoader.liteloader_nonebot.getInstalledPython', async () => {
 
 ipcMain.handle('LiteLoader.liteloader_nonebot.syncBotDependencies', async (_, bot: BotConfig) => {
   return await syncBotDependencies(bot);
+});
+
+ipcMain.handle('LiteLoader.liteloader_nonebot.runBot', async (_, id: string) => {
+  const config = await getBotConfig(id);
+  const process = spawn('nb', ['run'], { cwd: config.path });
+
+  if (config.pid === 0) {
+    await updateBotConfig(Number(id), 'pid', process.pid);
+  } else {
+    throw new Error(`Process with PID ${config.pid} is already running.`);
+  }
+
+  process.stdout.on('data', (data) => {
+    logStorage.add(data.toString());
+  });
+
+  process.stderr.on('data', (data) => {
+    logStorage.add(data.toString());
+  });
+
+  logStorage.addListener(async (log: string) => {
+    console.log('Sending log to renderer:', log);
+    BrowserWindow.getAllWindows().forEach((win) => {
+      win.webContents.send('LiteLoader.liteloader_nonebot.onBotLog', log);
+    });
+  });
+
+  process.on('exit', async () => {
+    treeKill(process.pid!);
+    await updateBotConfig(Number(id), 'pid', 0);
+  });
+
+  process.on('close', async () => {
+    await updateBotConfig(Number(id), 'pid', 0);
+  });
+});
+
+ipcMain.handle('LiteLoader.liteloader_nonebot.stopBot', async (_, id: string) => {
+  const config = await getBotConfig(id);
+
+  if (config.pid !== 0) {
+    treeKill(config.pid);
+    await updateBotConfig(Number(id), 'pid', 0);
+  }
 });

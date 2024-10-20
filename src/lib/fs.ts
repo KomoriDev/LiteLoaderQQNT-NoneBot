@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { log } from '@/lib';
 
 export async function readJsonFile<T>(filePath: string): Promise<T> {
   const fullPath = path.resolve(__dirname, filePath);
@@ -8,15 +7,25 @@ export async function readJsonFile<T>(filePath: string): Promise<T> {
   return JSON.parse(fileContent) as T;
 }
 
-export async function writeJsonFile<T>(filePath: string, data: Partial<T>): Promise<void> {
+export async function writeJsonFile<T>(
+  filePath: string,
+  data: T[],
+  mode: 'append' | 'overwrite' = 'append'
+): Promise<void> {
+  let jsonData: T[] = [];
   const fullPath = path.resolve(__dirname, filePath);
 
-  const fileContent = await fs.readFile(fullPath, 'utf-8');
-  const jsonData: T[] = JSON.parse(fileContent) as T[];
+  if (mode === 'append') {
+    const fileContent = await fs.readFile(fullPath, 'utf-8');
+    jsonData = JSON.parse(fileContent);
+  }
 
-  jsonData.push(data as T);
+  if (mode === 'append') {
+    jsonData.push(...data);
+  } else if (mode === 'overwrite') {
+    jsonData = [...data];
+  }
 
-  log('写入 bot.json', `路径：${fullPath}`, `数据：${data}`);
   return fs.writeFile(fullPath, JSON.stringify(jsonData, null, 2), 'utf-8');
 }
 

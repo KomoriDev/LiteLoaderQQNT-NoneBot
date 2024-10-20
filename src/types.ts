@@ -8,6 +8,8 @@ export interface BotConfig {
   name: string;
   /** Bot 目录 */
   path: string;
+  /** pid */
+  pid: number;
   /** 是否自启动 */
   autoStart: boolean;
   /** Python 信息 */

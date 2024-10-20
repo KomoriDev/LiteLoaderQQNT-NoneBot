@@ -65,6 +65,7 @@ const confirmModal = async () => {
         const botConfig: BotConfig = {
           name: createBotModal.botName,
           path: createBotModal.botPath,
+          pid: 0,
           autoStart: false,
           python: pythonList.value[0],
         };

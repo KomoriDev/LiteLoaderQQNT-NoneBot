@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 
-import type { ContextBridgeApi } from './preload';
+import { IpcRenderer } from 'electron';
+import type { ContextBridgeApi, ipcRendererBridgeApi } from './preload';
 
 declare namespace LiteLoader {
   interface ILiteLoaderPath {
@@ -77,6 +78,7 @@ declare global {
   const LiteLoader: LiteLoader;
 
   interface Window {
+    ipcRenderer: IpcRenderer;
     liteloader_nonebot: ContextBridgeApi;
   }
 }
