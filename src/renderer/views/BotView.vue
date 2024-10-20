@@ -58,14 +58,12 @@ const stopBot = async () => {
   getBot();
 };
 
-window.ipcRenderer.on('LiteLoader.liteloader_nonebot.onBotLog', (_, log: string) => {
-  console.log('Received log:', log);
-  logStorage.value?.push(log + '\n');
-});
-
 window.liteloader_nonebot.onBotLog((log) => {
-  console.log('Received log:', log);
-  logStorage.value?.push(log + '\n');
+  if (logStorage.value) {
+    logStorage.value = [...logStorage.value, log];
+  } else {
+    logStorage.value = [log];
+  }
 });
 
 onMounted(async () => {
