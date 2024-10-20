@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD033 MD036 MD041 -->
 <p align="center">
   <a href="https://github.com/KomoriDev/LiteLoaderQQNT-NoneBot">
-    <img src="./docs/logo.png" width="200" height="200" alt="nonebot">
+    <img src="https://nonebot.dev/logo.png" width="200" height="200" alt="nonebot">
   </a>
 </p>
 

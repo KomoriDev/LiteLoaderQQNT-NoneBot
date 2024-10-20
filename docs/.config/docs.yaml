@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://unpkg.com/undocs/schema/config.json
+
+name: 'LLNoneBot'
+shortDescription: 'Bot, made easy.'
+description: '在 QQ 上管理你的 NoneBot 应用 / Manage your NoneBot App on QQ'
+github: 'KomoriDev/LiteLoaderQQNT-NoneBot'
+url: 'https://github.com/KomoriDev/LiteLoaderQQNT-NoneBot'
+themeColor: '#f43f5e'
+landing:
+  # contributors: true
+  features:
+    - title: '开箱即用'
+      icon: '⚡'
+      description: '简单易用，无需复杂配置，初次接触也可轻松上手。'
+    - title: '插件管理'
+      icon: '📦'
+      description: '内置插件管理系统，更易于管理。'
