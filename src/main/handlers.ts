@@ -92,4 +92,5 @@ ipcMain.handle('LiteLoader.liteloader_nonebot.stopBot', async (_, id: string) =>
     treeKill(config.pid);
     await updateBotConfig(Number(id), 'pid', 0);
   }
+  LogStorageFather.removeStorage(id);
 });
