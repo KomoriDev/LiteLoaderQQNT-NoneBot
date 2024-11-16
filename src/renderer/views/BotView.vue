@@ -42,7 +42,11 @@ const deleteBot = async () => {
 };
 
 const runBot = async () => {
-  await window.liteloader_nonebot.runBot(route.params.id as string);
+  try {
+    await window.liteloader_nonebot.runBot(route.params.id as string);
+  } catch (error) {
+    toast.error('启动失败', { description: String(error) });
+  }
   getBot();
 };
 
