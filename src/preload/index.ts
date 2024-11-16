@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer, OpenDialogOptions, OpenDialogReturnValue } from 'electron';
 import { BotConfig, NontBotConfig, Python } from '@/types';
+import { ProcessLog } from '@/lib/process/schemas';
 
 export type ContextBridgeApi = {
   getBots: () => Promise<BotConfig[]>;
@@ -15,7 +16,7 @@ export type ContextBridgeApi = {
   syncBotDependencies: (bot: BotConfig) => Promise<void>;
   runBot: (id: string) => Promise<void>;
   stopBot: (id: string) => Promise<void>;
-  onBotLog: (callback: (log: string) => void) => void;
+  onBotLog: (callback: (log: ProcessLog) => void) => void;
 };
 
 const exposedApi: ContextBridgeApi = {
@@ -47,7 +48,7 @@ const exposedApi: ContextBridgeApi = {
   // 关闭 Bot
   stopBot: (id) => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.stopBot', id),
   // Bot 运行日志
-  onBotLog: (callback: (log: string) => void) =>
+  onBotLog: (callback: (log: ProcessLog) => void) =>
     ipcRenderer.on('LiteLoader.liteloader_nonebot.onBotLog', (_, log) => callback(log)),
 };
 

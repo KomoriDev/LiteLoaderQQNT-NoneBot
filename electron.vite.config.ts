@@ -82,6 +82,7 @@ export default defineConfig({
           { src: './src/public', dest: 'dist/public' },
           { src: './src/template', dest: 'dist/template', flatten: false },
           { src: './src/template/.python-version', dest: 'dist/template' },
+          { src: './node_modules/ps-list/vendor', dest: 'dist/main/vendor' },
         ],
       }),
       viteZipPack({

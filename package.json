@@ -16,6 +16,7 @@
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.447.0",
     "pinia": "^2.1.7",
+    "ps-list": "^8.1.1",
     "radix-vue": "^1.9.6",
     "tailwind-merge": "^2.5.2",
     "tree-kill": "^1.2.2",

@@ -1,13 +1,14 @@
 import path from 'path';
-import treeKill from 'tree-kill';
 import fs, { rm } from 'fs/promises';
-import { spawn } from 'child_process';
 import { ipcMain, dialog, OpenDialogOptions, BrowserWindow } from 'electron';
 
 import { BotConfig } from '@/types';
 import { getBotConfig, updateBotConfig } from './config';
 import { getInstalledPython, syncBotDependencies } from './uv';
-import { readJsonFile, writeJsonFile, processTemplate, logStorage } from '@/lib';
+import { readJsonFile, writeJsonFile, processTemplate } from '@/lib';
+import { Processor, ProcessManager } from '@/lib/process/process';
+import { LogStorageFather } from '@/lib/process/log';
+import treeKill from 'tree-kill';
 
 const dataPath = LiteLoader.plugins.liteloader_nonebot.path.data;
 const pluginPath = LiteLoader.plugins.liteloader_nonebot.path.plugin;
@@ -54,43 +55,40 @@ ipcMain.handle('LiteLoader.liteloader_nonebot.syncBotDependencies', async (_, bo
 
 ipcMain.handle('LiteLoader.liteloader_nonebot.runBot', async (_, id: string) => {
   const config = await getBotConfig(id);
-  const process = spawn('nb', ['run'], { cwd: config.path });
+  let process = ProcessManager.getProcess(id);
 
-  if (config.pid === 0) {
-    await updateBotConfig(Number(id), 'pid', process.pid);
+  if (process) {
+    if (process.processIsRunning) {
+      throw new Error(`Bot ${config.name} is already running`);
+    } else {
+      await process.start();
+    }
   } else {
-    throw new Error(`Process with PID ${config.pid} is already running.`);
+    process = new Processor(['nb', 'run'], config.path, undefined, 300);
   }
 
-  process.stdout.on('data', (data) => {
-    logStorage.add(data.toString());
-  });
-
-  process.stderr.on('data', (data) => {
-    logStorage.add(data.toString());
-  });
-
-  logStorage.addListener(async (log: string) => {
-    console.log('Sending log to renderer:', log);
+  process.logStorage.addListener(async (log) => {
     BrowserWindow.getAllWindows().forEach((win) => {
       win.webContents.send('LiteLoader.liteloader_nonebot.onBotLog', log);
     });
   });
 
-  process.on('exit', async () => {
-    treeKill(process.pid!);
-    await updateBotConfig(Number(id), 'pid', 0);
-  });
+  LogStorageFather.addStorage(process.logStorage, id);
+  ProcessManager.addProcess(process, id);
 
-  process.on('close', async () => {
-    await updateBotConfig(Number(id), 'pid', 0);
-  });
+  await process.start();
+  await updateBotConfig(Number(id), 'pid', process.process?.pid);
 });
 
 ipcMain.handle('LiteLoader.liteloader_nonebot.stopBot', async (_, id: string) => {
-  const config = await getBotConfig(id);
+  const process = ProcessManager.getProcess(id);
 
-  if (config.pid !== 0) {
+  if (process) {
+    if (!process.processIsRunning) return;
+    process.stop();
+    await updateBotConfig(Number(id), 'pid', 0);
+  } else {
+    const config = await getBotConfig(id);
     treeKill(config.pid);
     await updateBotConfig(Number(id), 'pid', 0);
   }

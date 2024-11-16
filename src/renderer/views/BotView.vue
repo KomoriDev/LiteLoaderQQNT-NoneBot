@@ -15,10 +15,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@@/components/ui/dropdown-menu';
+import { ProcessLog } from '@/lib/process/schemas';
 
 const route = useRoute();
 const bot = ref<BotConfig>();
-const logStorage = ref<string[]>();
+const logStorage = ref<ProcessLog[]>();
 const consoleModal = ref<Element>();
 
 const getBot = async () => {
@@ -41,11 +42,7 @@ const deleteBot = async () => {
 };
 
 const runBot = async () => {
-  try {
-    await window.liteloader_nonebot.runBot(route.params.id as string);
-  } catch (error) {
-    toast.error('启动失败', { description: `机器人『 ${bot.value!.name} 』已在运行` });
-  }
+  await window.liteloader_nonebot.runBot(route.params.id as string);
   getBot();
 };
 
@@ -76,7 +73,15 @@ onMounted(async () => {
     <setting-section>
       <div v-if="logStorage">
         <setting-panel>
-          {{ logStorage }}
+          <div v-for="(log, index) in logStorage" :key="index">
+            <span
+              :class="{
+                'bg-red-400/50': log.level === 'ERROR',
+                'bg-orange-400/50': log.level === 'WARNING',
+              }"
+              >{{ log.message }}</span
+            >
+          </div>
         </setting-panel>
       </div>
       <div v-else class="flex flex-col gap-3 items-center justify-center mb-5">
@@ -162,12 +167,6 @@ onMounted(async () => {
           <Button v-else variant="danger" @click="stopBot">结束</Button>
         </setting-item>
       </setting-list>
-    </setting-panel>
-  </setting-section>
-
-  <setting-section data-title="日志">
-    <setting-panel>
-      {{ logStorage }}
     </setting-panel>
   </setting-section>
 </template>
