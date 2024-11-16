@@ -1,9 +1,6 @@
 import path from 'path';
 import { readJsonFile, writeJsonFile } from '@/lib';
 import { BotConfig } from '@/types';
-import { ProcessManager, Processor } from '@/lib/process/process';
-import { LogStorageFather } from '@/lib/process/log';
-import { BrowserWindow } from 'electron';
 
 const dataPath = LiteLoader.plugins.liteloader_nonebot.path.data;
 
@@ -30,38 +27,4 @@ export async function updateBotConfig(id: number, key: string, value: any): Prom
   await writeJsonFile(filePath, data, 'overwrite');
 
   console.log(`修改 ${id} 配置 ${key}：${oldValue} -> ${value}`);
-}
-
-export async function syncBotStatus(): Promise<void> {
-  const config = await readJsonFile<BotConfig[]>(path.join(dataPath, 'bots.json'));
-
-  await Promise.all(
-    config.map(async (bot, id) => {
-      const process = ProcessManager.getProcess(String(id));
-
-      if (bot.pid !== 0) {
-        ProcessManager.addProcess(new Processor(['nb', 'run'], bot.path, undefined, 300), String(id));
-        return;
-      } else if (!process && bot.autoStart) {
-        const process = new Processor(['nb', 'run'], bot.path, undefined, 300);
-
-        process.logStorage.addListener(async (log) => {
-          BrowserWindow.getAllWindows().forEach((win) => {
-            win.webContents.send('LiteLoader.liteloader_nonebot.onBotLog', log);
-          });
-        });
-
-        LogStorageFather.addStorage(process.logStorage, String(id));
-        ProcessManager.addProcess(process, String(id));
-
-        await updateBotConfig(id, 'isRunning', true);
-        await process.start();
-      }
-
-      // const status = process.getStatus();
-      // if (status.isRunning !== bot.isRunning) {
-      //   await updateBotConfig(id, 'isRunning', status.isRunning);
-      // }
-    })
-  );
 }
