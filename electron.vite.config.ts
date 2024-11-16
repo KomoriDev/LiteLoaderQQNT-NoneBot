@@ -54,7 +54,22 @@ export default defineConfig({
     ...BaseConfig,
 
     plugins: [
-      vue(),
+      vue({
+        template: {
+          compilerOptions: {
+            isCustomElement: (tag) =>
+              [
+                'setting-panel',
+                'setting-section',
+                'setting-modal',
+                'setting-text',
+                'setting-item',
+                'setting-list',
+                'data-orientation',
+              ].includes(tag),
+          },
+        },
+      }),
       viteChecker({
         typescript: true,
         eslint: {
