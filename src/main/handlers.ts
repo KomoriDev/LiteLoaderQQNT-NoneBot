@@ -1,14 +1,13 @@
 import path from 'path';
+import treeKill from 'tree-kill';
 import fs, { rm } from 'fs/promises';
-import { ipcMain, dialog, OpenDialogOptions, BrowserWindow } from 'electron';
+import { ipcMain, dialog, OpenDialogOptions } from 'electron';
 
 import { BotConfig } from '@/types';
 import { getBotConfig, updateBotConfig } from './config';
 import { getInstalledPython, syncBotDependencies } from './uv';
 import { readJsonFile, writeJsonFile, processTemplate } from '@/lib';
-import { Processor, ProcessManager } from '@/lib/process/process';
-import { LogStorageFather } from '@/lib/process/log';
-import treeKill from 'tree-kill';
+import { Processor, ProcessManager, LogStorageFather, logForward, ProcessLog } from '@/lib/process';
 
 const dataPath = LiteLoader.plugins.liteloader_nonebot.path.data;
 const pluginPath = LiteLoader.plugins.liteloader_nonebot.path.plugin;
@@ -67,13 +66,9 @@ ipcMain.handle('LiteLoader.liteloader_nonebot.runBot', async (_, id: string) => 
     process = new Processor(['nb', 'run'], config.path, undefined, 300);
   }
 
-  process.logStorage.addListener(async (log) => {
-    BrowserWindow.getAllWindows().forEach((win) => {
-      win.webContents.send('LiteLoader.liteloader_nonebot.onBotLog', log);
-    });
-  });
+  process.logStorage.addListener('run-log', async (log: ProcessLog) => logForward(`run-bot-${id}`, log));
 
-  LogStorageFather.addStorage(process.logStorage, id);
+  LogStorageFather.addStorage(process.logStorage, `run-bot-${id}`);
   ProcessManager.addProcess(process, id);
 
   await process.start();
@@ -92,5 +87,10 @@ ipcMain.handle('LiteLoader.liteloader_nonebot.stopBot', async (_, id: string) =>
     treeKill(config.pid);
     await updateBotConfig(Number(id), 'pid', 0);
   }
-  LogStorageFather.removeStorage(id);
+  LogStorageFather.removeStorage(`run-bot-${id}`);
+});
+
+ipcMain.handle('LiteLoader.liteloader_nonebot.getLogHistory', (_, key: string) => {
+  const logStorage = LogStorageFather.getStorage<ProcessLog>(key);
+  return logStorage?.list();
 });

@@ -60,11 +60,6 @@ export class Processor {
         this.logStorage.add(new ProcessLog(output));
       });
 
-      this.process.stderr?.on('data', (data) => {
-        const errorOutput = data.toString();
-        this.logStorage.add(new ProcessLog(errorOutput));
-      });
-
       this.process.on('spawn', () => {
         this.processIsRunning = true;
         resolve();

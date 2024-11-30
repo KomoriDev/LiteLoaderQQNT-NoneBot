@@ -35,7 +35,7 @@ type LogListener<T> = (log: T) => Promise<void>;
 export class LogStorage<T> {
   private count: number = 0;
   private logs: Map<number, T> = new Map();
-  public listeners: Set<LogListener<T>> = new Set();
+  public listeners: Map<string, LogListener<T>> = new Map();
   private rotation: number;
   private maxLogs?: number;
 
@@ -55,7 +55,7 @@ export class LogStorage<T> {
     setTimeout(() => this.remove(seq), this.rotation);
 
     await Promise.all(
-      Array.from(this.listeners).map((listener) =>
+      Array.from(this.listeners.values()).map((listener) =>
         listener(log).catch((err) => {
           console.error('Error in listener:', err);
         })
@@ -84,11 +84,13 @@ export class LogStorage<T> {
     return this.count;
   }
 
-  addListener(listener: LogListener<T>): void {
-    this.listeners.add(listener);
+  addListener(id: string, listener: LogListener<T>): void {
+    if (this.listeners.has(id)) return;
+    this.listeners.set(id, listener);
   }
-  removeListener(listener: LogListener<T>): void {
-    this.listeners.delete(listener);
+
+  removeListener(id: string): void {
+    this.listeners.delete(id);
   }
 }
 

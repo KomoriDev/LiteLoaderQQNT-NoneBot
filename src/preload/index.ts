@@ -16,7 +16,8 @@ export type ContextBridgeApi = {
   syncBotDependencies: (bot: BotConfig) => Promise<void>;
   runBot: (id: string) => Promise<void>;
   stopBot: (id: string) => Promise<void>;
-  onBotLog: (callback: (log: ProcessLog) => void) => void;
+  getLogHistory: (key: string) => Promise<ProcessLog[]>;
+  logListener: (callback: (key: string, log: ProcessLog) => void) => void;
 };
 
 const exposedApi: ContextBridgeApi = {
@@ -47,9 +48,11 @@ const exposedApi: ContextBridgeApi = {
   runBot: (id) => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.runBot', id),
   // 关闭 Bot
   stopBot: (id) => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.stopBot', id),
-  // Bot 运行日志
-  onBotLog: (callback: (log: ProcessLog) => void) =>
-    ipcRenderer.on('LiteLoader.liteloader_nonebot.onBotLog', (_, log) => callback(log)),
+  // 历史日志
+  getLogHistory: (key) => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.getLogHistory', key),
+  // 进程日志
+  logListener: (callback: (key: string, log: ProcessLog) => void) =>
+    ipcRenderer.on('LiteLoader.liteloader_nonebot.logListener', (_, key, log) => callback(key, log)),
 };
 
 contextBridge.exposeInMainWorld('liteloader_nonebot', exposedApi);
