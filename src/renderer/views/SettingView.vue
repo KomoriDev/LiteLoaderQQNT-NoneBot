@@ -145,7 +145,11 @@ onMounted(async () => {
         </setting-item>
         <data-orientation data-orientation="horizontal"></data-orientation>
         <setting-item v-for="(bot, index) in botList" :key="index">
-          <setting-text>{{ bot.name }}</setting-text>
+          <div class="flex gap-2 items-center">
+            <span v-if="bot?.pid === 0" class="w-1.5 h-1.5 mt-0.5 rounded-full bg-red-500"></span>
+            <span v-else class="w-1.5 h-1.5 mt-0.5 rounded-full bg-green-500"></span>
+            <setting-text>{{ bot.name }}</setting-text>
+          </div>
           <Button variant="primary" @click="router.push(`/bot/${index}`)">查看</Button>
         </setting-item>
       </setting-list>
