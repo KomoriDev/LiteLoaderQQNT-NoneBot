@@ -6,6 +6,7 @@ import { BotConfig, Python } from '@/types';
 import { router } from '@@/router';
 
 import { Button } from '@@/components/ui/button';
+import { Modal as Dialog } from '../components/ui/modal';
 
 const pythonList = ref<Python[]>([]);
 const botList = ref<BotConfig[]>([]);
@@ -154,55 +155,57 @@ onMounted(async () => {
         </setting-item>
       </setting-list>
     </setting-panel>
-    <setting-modal v-if="isShowModal" data-title="创建 Bot" is-active>
-      <setting-section>
-        <setting-panel>
-          <setting-list data-direction="column">
-            <setting-item data-direction="column">
-              <setting-text style="margin-right: 20px">名称</setting-text>
-              <input
-                v-model="createBotModal.botName"
-                placeholder="请输入 Bot 名称"
-                class="input-text"
-                type="text"
-                spellcheck="false"
-              />
-            </setting-item>
-            <setting-item data-direction="column">
-              <div>
-                <div style="display: flex; align-items: center; margin-bottom: 2px">
-                  <setting-text>目录</setting-text>
-                  <setting-text data-type="secondary" style="margin-left: 5px; margin-right: 5px">-</setting-text>
-                  <setting-text data-type="secondary">留空则使用默认值</setting-text>
-                </div>
+    <Dialog title="Bot" :open="isShowModal" @close="isShowModal = false">
+      <template #body>
+        <setting-section>
+          <setting-panel>
+            <setting-list data-direction="column">
+              <setting-item data-direction="column">
+                <setting-text style="margin-right: 20px">名称</setting-text>
                 <input
-                  v-model="createBotModal.botPath"
-                  title="移除路径"
+                  v-model="createBotModal.botName"
+                  placeholder="请输入 Bot 名称"
                   class="input-text"
                   type="text"
                   spellcheck="false"
-                  readonly
-                  style="cursor: pointer"
-                  :placeholder="createBotModal.botPath ? createBotModal.botPath : '请选择 Bot 目录'"
-                  @click="createBotModal.botPath = ''"
                 />
-              </div>
-              <Button variant="secondary" @click="selectLocalFolder">选择</Button>
-            </setting-item>
-          </setting-list>
-        </setting-panel>
-        <div style="display: flex; justify-content: flex-end; gap: 5px; margin-bottom: 20px">
-          <Button variant="secondary" @click="isShowModal = false">取消</Button>
-          <Button
-            variant="primary"
-            :style="isButtonDisabled ? 'opacity: 0.3; cursor: not-allowed; pointer-events: none;' : ''"
-            @click="confirmModal"
-          >
-            确定
-          </Button>
-        </div>
-      </setting-section>
-    </setting-modal>
+              </setting-item>
+              <setting-item data-direction="column">
+                <div>
+                  <div style="display: flex; align-items: center; margin-bottom: 2px">
+                    <setting-text>目录</setting-text>
+                    <setting-text data-type="secondary" style="margin-left: 5px; margin-right: 5px">-</setting-text>
+                    <setting-text data-type="secondary">留空则使用默认值</setting-text>
+                  </div>
+                  <input
+                    v-model="createBotModal.botPath"
+                    title="移除路径"
+                    class="input-text"
+                    type="text"
+                    spellcheck="false"
+                    readonly
+                    style="cursor: pointer"
+                    :placeholder="createBotModal.botPath ? createBotModal.botPath : '请选择 Bot 目录'"
+                    @click="createBotModal.botPath = ''"
+                  />
+                </div>
+                <Button variant="secondary" @click="selectLocalFolder">选择</Button>
+              </setting-item>
+            </setting-list>
+          </setting-panel>
+        </setting-section>
+      </template>
+      <template #footer>
+        <Button class="mr-1" variant="secondary" @click="isShowModal = false">取消</Button>
+        <Button
+          variant="primary"
+          :style="isButtonDisabled ? 'opacity: 0.3; cursor: not-allowed; pointer-events: none;' : ''"
+          @click="confirmModal"
+        >
+          确定
+        </Button>
+      </template>
+    </Dialog>
   </setting-section>
 
   <setting-section data-title="需知">
