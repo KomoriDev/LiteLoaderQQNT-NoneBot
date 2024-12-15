@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer, OpenDialogOptions, OpenDialogReturnValue } from 'electron';
-import { BotConfig, NontBotConfig, Python } from '@/types';
+import { BotConfig, NontBotConfig, PluginsResponse, Python } from '@/types';
 import { ProcessLog } from '@/lib/process/schemas';
 
 export type ContextBridgeApi = {
@@ -18,6 +18,8 @@ export type ContextBridgeApi = {
   stopBot: (id: string) => Promise<void>;
   getLogHistory: (key: string) => Promise<ProcessLog[]>;
   logListener: (callback: (key: string, log: ProcessLog) => void) => void;
+  fetchPlugins: () => Promise<PluginsResponse>;
+  fetchGithubUser: (username: string) => Promise<any>;
 };
 
 const exposedApi: ContextBridgeApi = {
@@ -53,6 +55,10 @@ const exposedApi: ContextBridgeApi = {
   // 进程日志
   logListener: (callback: (key: string, log: ProcessLog) => void) =>
     ipcRenderer.on('LiteLoader.liteloader_nonebot.logListener', (_, key, log) => callback(key, log)),
+  // 获取插件列表
+  fetchPlugins: () => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.fetchPlugins'),
+  // 获取 Github 账户信息
+  fetchGithubUser: (username) => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.fetchGithubUser', username),
 };
 
 contextBridge.exposeInMainWorld('liteloader_nonebot', exposedApi);

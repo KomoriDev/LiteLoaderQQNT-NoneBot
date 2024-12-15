@@ -3,7 +3,7 @@ import treeKill from 'tree-kill';
 import fs, { rm } from 'fs/promises';
 import { ipcMain, dialog, OpenDialogOptions } from 'electron';
 
-import { BotConfig } from '@/types';
+import { BotConfig, PluginsResponse } from '@/types';
 import { getBotConfig, updateBotConfig } from './config';
 import { getInstalledPython, syncBotDependencies } from './uv';
 import { readJsonFile, writeJsonFile, processTemplate } from '@/lib';
@@ -93,4 +93,16 @@ ipcMain.handle('LiteLoader.liteloader_nonebot.stopBot', async (_, id: string) =>
 ipcMain.handle('LiteLoader.liteloader_nonebot.getLogHistory', (_, key: string) => {
   const logStorage = LogStorageFather.getStorage<ProcessLog>(key);
   return logStorage?.list();
+});
+
+ipcMain.handle('LiteLoader.liteloader_nonebot.fetchPlugins', async () => {
+  const response = await fetch('https://registry.nonebot.dev/plugins.json', { method: 'GET' });
+  const data: PluginsResponse = await response.json();
+  return data;
+});
+
+ipcMain.handle('LiteLoader.liteloader_nonebot.fetchGithubUser', async (_, username: string) => {
+  const response = await fetch(`https://api.github.com/users/${username}`, { method: 'GET' });
+  const data = await response.json();
+  return data;
 });

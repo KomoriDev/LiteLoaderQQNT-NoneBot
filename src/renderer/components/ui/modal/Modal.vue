@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { useSlots } from 'vue';
+import { clsx } from 'clsx';
+import { HTMLAttributes, useSlots } from 'vue';
 import { X } from 'lucide-vue-next';
 
 interface Props {
   title: string;
   open: boolean;
+  class?: HTMLAttributes['class'];
 }
-defineProps<Props>();
+const props = defineProps<Props>();
+
 defineEmits(['close']);
 
 const slots = useSlots();
@@ -15,15 +18,15 @@ const slots = useSlots();
 <template>
   <Teleport to="body">
     <Transition name="modal">
-      <div v-if="open" class="setting-modal">
+      <div v-if="props.open" class="setting-modal">
         <div class="mask" @click="$emit('close')"></div>
-        <div class="main">
+        <div :class="clsx('main', props.class)">
           <div class="container">
             <div class="header">
               <div class="extra">
                 <slot name="header"></slot>
               </div>
-              <div class="title">{{ title }}</div>
+              <div class="title">{{ props.title }}</div>
               <X class="close" @click="$emit('close')" />
             </div>
 

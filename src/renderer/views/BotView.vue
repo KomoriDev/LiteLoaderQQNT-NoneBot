@@ -128,6 +128,27 @@ onMounted(async () => {
       </setting-list>
     </setting-panel>
   </setting-section>
+
+  <setting-section data-title="环境">
+    <setting-panel>
+      <setting-list data-direction="column" is-collapsible data-title="插件">
+        <div class="flex items-center justify-between">
+          <p>当前共安装 0 个插件</p>
+        </div>
+      </setting-list>
+    </setting-panel>
+  </setting-section>
+
+  <setting-section>
+    <setting-panel>
+      <setting-list data-direction="column">
+        <setting-item>
+          <setting-text>商店</setting-text>
+          <Button variant="secondary" @click="router.push(`/store/${route.params.id}`)">前往</Button>
+        </setting-item>
+      </setting-list>
+    </setting-panel>
+  </setting-section>
 </template>
 
 <style scoped>
