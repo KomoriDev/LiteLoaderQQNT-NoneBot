@@ -3,7 +3,9 @@ import treeKill from 'tree-kill';
 import fs, { rm } from 'fs/promises';
 import { ipcMain, dialog, OpenDialogOptions } from 'electron';
 
-import { BotConfig, PluginsResponse } from '@/types';
+import type { BotConfig } from '@/types/config';
+import type { RegistryDataResponseTypes, RegistryDataType, ResourceTypes } from '@/preload';
+
 import { getBotConfig, updateBotConfig } from './config';
 import { getInstalledPython, syncBotDependencies } from './uv';
 import { readJsonFile, writeJsonFile, processTemplate } from '@/lib';
@@ -95,11 +97,14 @@ ipcMain.handle('LiteLoader.liteloader_nonebot.getLogHistory', (_, key: string) =
   return logStorage?.list();
 });
 
-ipcMain.handle('LiteLoader.liteloader_nonebot.fetchPlugins', async () => {
-  const response = await fetch('https://registry.nonebot.dev/plugins.json', { method: 'GET' });
-  const data: PluginsResponse = await response.json();
-  return data;
-});
+ipcMain.handle(
+  'LiteLoader.liteloader_nonebot.fetchRegistryData',
+  async <T extends RegistryDataType>(_, dataType: T): Promise<ResourceTypes[T][]> => {
+    const resp = await fetch(`https://registry.nonebot.dev/${dataType}s.json`, { method: 'GET' });
+    const data = (await resp.json()) as RegistryDataResponseTypes[T];
+    return data.map((resource) => ({ ...resource, resourceType: dataType }) as ResourceTypes[T]);
+  }
+);
 
 ipcMain.handle('LiteLoader.liteloader_nonebot.fetchGithubUser', async (_, username: string) => {
   const response = await fetch(`https://api.github.com/users/${username}`, { method: 'GET' });

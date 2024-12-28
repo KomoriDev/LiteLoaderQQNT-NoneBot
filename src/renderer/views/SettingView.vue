@@ -2,7 +2,7 @@
 import path from 'path';
 import { toast } from 'vue-sonner';
 import { onMounted, reactive, ref } from 'vue';
-import { BotConfig, Python } from '@/types';
+import { BotConfig, Python } from '@/types/config';
 import { router } from '@@/router';
 
 import { Button } from '@@/components/ui/button';

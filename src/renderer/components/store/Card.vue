@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Box, Maximize, CalendarDays, PackageCheck, PackageX } from 'lucide-vue-next';
+import { Box, Github, Maximize, CalendarDays, CircleCheckBig, PackageCheck, PackageX } from 'lucide-vue-next';
 
-import { Plugin } from '@/types';
-import { Github } from './icons';
-import { Modal } from './ui/modal';
+import type { Plugin } from '@/types/plugin';
+import type { Driver } from '@/types/driver';
+import type { Adapter } from '@/types/adapter';
+import { Modal } from '@@/components/ui/modal';
+import { Skeleton } from '@@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@@/components/ui/avatar';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@@/components/ui/hover-card';
 
 const props = defineProps<{
-  plugin: Plugin;
+  resource: Plugin | Driver | Adapter;
 }>();
 
 const detailModal = ref<boolean>(false);
@@ -36,7 +38,7 @@ const fetchGithubUser = async (username: string) => {
 </script>
 
 <template>
-  <Modal :title="props.plugin.name" :open="detailModal" @close="detailModal = false">
+  <Modal :title="props.resource.name" :open="detailModal" @close="detailModal = false">
     <template #body></template>
   </Modal>
 
@@ -46,19 +48,20 @@ const fetchGithubUser = async (username: string) => {
     ></div>
     <div
       class="relative flex h-4/5 p-4 bg-[--fill_light_primary] rounded-2xl overflow-hidden"
-      @click="openExternal(props.plugin.homepage)"
+      @click="openExternal(props.resource.homepage)"
     >
       <div class="w-full flex flex-col justify-between">
         <header class="ml-2">
           <div class="flex items-start justify-between">
             <div class="flex items-center gap-2">
-              <h1 class="text-lg font-semibold max-w-48 truncate">{{ props.plugin.name }}</h1>
+              <h1 class="text-lg font-semibold max-w-48 truncate">{{ props.resource.name }}</h1>
+              <CircleCheckBig v-if="props.resource.is_official" class="w-5 stroke-green-500" />
               <PackageCheck
-                v-if="props.plugin.valid"
+                v-if="props.resource.resourceType === 'plugin' && props.resource.valid"
                 class="w-5 stroke-green-400 cursor-pointer"
                 @click="
                   openExternal(
-                    `https://registry.nonebot.dev/plugin/${props.plugin.project_link}:${props.plugin.module_name}`
+                    `https://registry.nonebot.dev/plugin/${props.resource.project_link}:${props.resource.module_name}`
                   )
                 "
               />
@@ -67,18 +70,18 @@ const fetchGithubUser = async (username: string) => {
                 class="w-5 stroke-red-400 cursor-pointer"
                 @click="
                   openExternal(
-                    `https://registry.nonebot.dev/plugin/${props.plugin.project_link}:${props.plugin.module_name}`
+                    `https://registry.nonebot.dev/plugin/${props.resource.project_link}:${props.resource.module_name}`
                   )
                 "
               />
             </div>
             <Maximize class="w-5" @click="detailModal = true" />
           </div>
-          <p class="text-[--text_secondary] text-sm">{{ props.plugin.desc }}</p>
+          <p class="text-[--text_secondary] text-sm">{{ props.resource.desc }}</p>
         </header>
         <div class="mt-2 ml-2 space-x-2">
           <span
-            v-for="(tag, index) in props.plugin.tags"
+            v-for="(tag, index) in props.resource.tags"
             :key="index"
             class="px-2.5 py-0.5 rounded-full text-xs text-white"
             :style="`background-color: ${tag.color}`"
@@ -90,14 +93,14 @@ const fetchGithubUser = async (username: string) => {
     </div>
     <div class="w-full flex px-4 mt-1.5 relative justify-between items-center">
       <div class="flex gap-1">
-        <Github
-          class="w-5 opacity-70 cursor-pointer fill-[#434343] dark:fill-[#ADADAD]"
-          @click="openExternal(props.plugin.homepage)"
-        />
+        <Github class="w-5 opacity-70 cursor-pointer" @click="openExternal(props.resource.homepage)" />
         <Box
+          v-if="props.resource.resourceType === 'plugin'"
           class="w-5 opacity-70 cursor-pointer"
           @click="
-            openExternal(`https://registry.nonebot.dev/plugin/${props.plugin.project_link}:${props.plugin.module_name}`)
+            openExternal(
+              `https://registry.nonebot.dev/plugin/${props.resource.project_link}:${props.resource.module_name}`
+            )
           "
         />
       </div>
@@ -105,22 +108,22 @@ const fetchGithubUser = async (username: string) => {
         <HoverCardTrigger
           as-child
           class="cursor-pointer"
-          @click="openExternal(`https://github.com/${props.plugin.author}`)"
-          @mouseover="fetchGithubUser(props.plugin.author)"
+          @click="openExternal(`https://github.com/${props.resource.author}`)"
+          @mouseover="fetchGithubUser(props.resource.author)"
         >
           <Avatar size="xs">
-            <AvatarImage :src="`https://avatars.githubusercontent.com/${props.plugin.author}`" />
-            <AvatarFallback>{{ props.plugin.author }}</AvatarFallback>
+            <AvatarImage :src="`https://avatars.githubusercontent.com/${props.resource.author}`" />
+            <AvatarFallback>{{ props.resource.author }}</AvatarFallback>
           </Avatar>
         </HoverCardTrigger>
         <HoverCardContent class="w-80">
           <div class="flex justify-between space-x-4">
             <Avatar>
-              <AvatarImage :src="`https://avatars.githubusercontent.com/${props.plugin.author}`" />
-              <AvatarFallback>{{ props.plugin.author }}</AvatarFallback>
+              <AvatarImage :src="`https://avatars.githubusercontent.com/${props.resource.author}`" />
+              <AvatarFallback>{{ props.resource.author }}</AvatarFallback>
             </Avatar>
             <div class="space-y-1">
-              <h4 class="text-sm font-semibold">{{ props.plugin.author }}</h4>
+              <h4 class="text-sm font-semibold">{{ props.resource.author }}</h4>
               <Skeleton v-if="githubInfoLoading" class="w-full h-2 rounded-xl" />
               <p v-else class="text-sm">
                 {{ githubInfo['bio'] ? githubInfo['bio'] : '这个人很懒，什么都没留下...' }}

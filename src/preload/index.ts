@@ -1,6 +1,25 @@
 import { contextBridge, ipcRenderer, OpenDialogOptions, OpenDialogReturnValue } from 'electron';
-import { BotConfig, NontBotConfig, PluginsResponse, Python } from '@/types';
 import { ProcessLog } from '@/lib/process/schemas';
+
+import type { BotConfig, NontBotConfig, Python } from '@/types/config';
+import type { Adapter, AdaptersResponse } from '@/types/adapter';
+import type { Driver, DriversResponse } from '@/types/driver';
+import type { Plugin, PluginsResponse } from '@/types/plugin';
+
+export type RegistryDataResponseTypes = {
+  adapter: AdaptersResponse;
+  driver: DriversResponse;
+  plugin: PluginsResponse;
+};
+export type RegistryDataType = keyof RegistryDataResponseTypes;
+
+export type ResourceTypes = {
+  adapter: Adapter;
+  driver: Driver;
+  plugin: Plugin;
+};
+
+export type Resource = Adapter | Driver | Plugin;
 
 export type ContextBridgeApi = {
   getBots: () => Promise<BotConfig[]>;
@@ -18,7 +37,7 @@ export type ContextBridgeApi = {
   stopBot: (id: string) => Promise<void>;
   getLogHistory: (key: string) => Promise<ProcessLog[]>;
   logListener: (callback: (key: string, log: ProcessLog) => void) => void;
-  fetchPlugins: () => Promise<PluginsResponse>;
+  fetchRegistryData: <T extends RegistryDataType>(dataType: T) => Promise<ResourceTypes[T][]>;
   fetchGithubUser: (username: string) => Promise<any>;
 };
 
@@ -55,8 +74,8 @@ const exposedApi: ContextBridgeApi = {
   // 进程日志
   logListener: (callback: (key: string, log: ProcessLog) => void) =>
     ipcRenderer.on('LiteLoader.liteloader_nonebot.logListener', (_, key, log) => callback(key, log)),
-  // 获取插件列表
-  fetchPlugins: () => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.fetchPlugins'),
+  // 获取测试数据
+  fetchRegistryData: (dataType) => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.fetchRegistryData', dataType),
   // 获取 Github 账户信息
   fetchGithubUser: (username) => ipcRenderer.invoke('LiteLoader.liteloader_nonebot.fetchGithubUser', username),
 };
