@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router';
 import { ChevronLeft, Ellipsis, Folder, Trash2, Terminal } from 'lucide-vue-next';
 
 import { router } from '@@/router';
-import { BotConfig } from '@/types';
+import { BotConfig } from '@/types/config';
 import { Button } from '@@/components/ui/button';
 import {
   DropdownMenu,
