@@ -130,6 +130,7 @@ const slots = useSlots();
     .body {
       border-radius: 8px;
       padding: 20px 20px 0px 20px;
+      margin-bottom: 20px;
     }
 
     .footer {

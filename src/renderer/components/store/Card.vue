@@ -5,16 +5,17 @@ import { Box, Github, Maximize, CalendarDays, CircleCheckBig, PackageCheck, Pack
 import type { Plugin } from '@/types/plugin';
 import type { Driver } from '@/types/driver';
 import type { Adapter } from '@/types/adapter';
-import { Modal } from '@@/components/ui/modal';
 import { Skeleton } from '@@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@@/components/ui/avatar';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@@/components/ui/hover-card';
+
+import Modal from './Modal.vue';
 
 const props = defineProps<{
   resource: Plugin | Driver | Adapter;
 }>();
 
-const detailModal = ref<boolean>(false);
+const detailModal = ref<InstanceType<typeof Modal> | null>();
 
 const githubInfo = ref<any>();
 const githubInfoLoading = ref<boolean>(false);
@@ -38,9 +39,7 @@ const fetchGithubUser = async (username: string) => {
 </script>
 
 <template>
-  <Modal :title="props.resource.name" :open="detailModal" @close="detailModal = false">
-    <template #body></template>
-  </Modal>
+  <Modal ref="detailModal" :resource="resource" />
 
   <div class="relative w-full h-40 bg-[#7f7f7f26] rounded-2xl">
     <div
@@ -48,7 +47,7 @@ const fetchGithubUser = async (username: string) => {
     ></div>
     <div
       class="relative flex h-4/5 p-4 bg-[--fill_light_primary] rounded-2xl overflow-hidden"
-      @click="openExternal(props.resource.homepage)"
+      @click="detailModal?.openModal()"
     >
       <div class="w-full flex flex-col justify-between">
         <header class="ml-2">
@@ -75,7 +74,7 @@ const fetchGithubUser = async (username: string) => {
                 "
               />
             </div>
-            <Maximize class="w-5" @click="detailModal = true" />
+            <Maximize class="w-5 cursor-pointer" @click="detailModal?.openModal()" />
           </div>
           <p class="text-[--text_secondary] text-sm">{{ props.resource.desc }}</p>
         </header>
