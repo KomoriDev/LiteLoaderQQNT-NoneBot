@@ -1,6 +1,6 @@
 import path from 'path';
 import { readJsonFile, writeJsonFile } from '@/lib';
-import { BotConfig } from '@/types';
+import { BotConfig } from '@/types/config';
 
 const dataPath = LiteLoader.plugins.liteloader_nonebot.path.data;
 

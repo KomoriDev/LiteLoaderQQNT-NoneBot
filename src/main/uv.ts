@@ -1,6 +1,6 @@
 import { exec } from 'child_process';
 import { log } from '@/lib';
-import { BotConfig, Python } from '@/types';
+import { BotConfig, Python } from '@/types/config';
 
 const os = LiteLoader.os.platform;
 
